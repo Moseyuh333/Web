@@ -386,6 +386,56 @@
       will-change: opacity, transform;
     }
 
+    .hero-photo-scene .duel-line {
+      position: absolute;
+      left: 8%;
+      right: 8%;
+      top: 52%;
+      z-index: 3;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(245, 240, 232, 0.72), rgba(201, 147, 42, 0.8), transparent);
+      opacity: 0.38;
+      transform: scaleX(0);
+      animation: duelLine 3.8s var(--ease-out) 2600ms infinite;
+      transform-origin: center;
+    }
+
+    @keyframes duelLine {
+      0%, 42%, 100% { transform: scaleX(0); opacity: 0; }
+      54% { transform: scaleX(1); opacity: 0.48; }
+      68% { transform: scaleX(0.18); opacity: 0.18; }
+    }
+
+    .kinetic-rail {
+      position: absolute;
+      z-index: 2;
+      pointer-events: none;
+      color: rgba(201, 147, 42, 0.16);
+      font-family: var(--font-mono);
+      font-size: 0.64rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      writing-mode: vertical-rl;
+      animation: railDrift 7s ease-in-out infinite alternate;
+    }
+
+    .kinetic-rail--left {
+      left: clamp(16px, 3vw, 42px);
+      bottom: 12vh;
+    }
+
+    .kinetic-rail--right {
+      right: clamp(16px, 3vw, 42px);
+      top: 16vh;
+      animation-delay: -2s;
+    }
+
+    @keyframes railDrift {
+      from { transform: translateY(-10px); opacity: 0.12; }
+      to { transform: translateY(18px); opacity: 0.36; }
+    }
+
     .hero-photo-scene img {
       position: absolute;
       inset: 0;
@@ -563,6 +613,37 @@
       text-transform: uppercase;
     }
 
+    .hero-roles {
+      position: relative;
+      height: 24px;
+      margin-top: 14px;
+      color: rgba(201, 147, 42, 0.78);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.26em;
+      overflow: hidden;
+      text-transform: uppercase;
+    }
+
+    .hero-roles span {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transform: translateY(18px);
+      animation: roleCycle 15s var(--ease-out) infinite;
+    }
+
+    .hero-roles span:nth-child(2) { animation-delay: 3s; }
+    .hero-roles span:nth-child(3) { animation-delay: 6s; }
+    .hero-roles span:nth-child(4) { animation-delay: 9s; }
+    .hero-roles span:nth-child(5) { animation-delay: 12s; }
+
+    @keyframes roleCycle {
+      0% { opacity: 0; transform: translateY(18px); filter: blur(4px); }
+      8%, 17% { opacity: 1; transform: translateY(0); filter: blur(0); }
+      25%, 100% { opacity: 0; transform: translateY(-18px); filter: blur(4px); }
+    }
+
     .tagline {
       max-width: 760px;
       margin: 22px auto 0;
@@ -575,6 +656,8 @@
     .hero-actions {
       display: flex;
       justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
       margin-top: 30px;
     }
 
@@ -595,6 +678,20 @@
       text-transform: uppercase;
       overflow: hidden;
       box-shadow: 0 18px 44px rgba(201, 147, 42, 0.18);
+    }
+
+    .hero-cta--ghost {
+      color: rgba(245, 240, 232, 0.86);
+      background: rgba(10, 8, 5, 0.42);
+      border-color: rgba(201, 147, 42, 0.42);
+      box-shadow: none;
+      backdrop-filter: blur(10px);
+    }
+
+    .hero-cta--ghost.is-active {
+      color: var(--color-gold);
+      border-color: rgba(201, 147, 42, 0.8);
+      box-shadow: 0 0 32px rgba(201, 147, 42, 0.16);
     }
 
     .hero-cta::after,
@@ -1176,11 +1273,32 @@
       transition: background 220ms ease, border-color 220ms ease, transform 220ms ease;
     }
 
+    .sound-toggle::before {
+      content: "";
+      position: absolute;
+      inset: -8px;
+      border: 1px solid rgba(201, 147, 42, 0.18);
+      opacity: 0;
+      transform: scale(0.72);
+      transition: opacity 220ms ease, transform 220ms ease;
+    }
+
     .sound-toggle:hover,
     .sound-toggle.is-active {
       background: rgba(201, 147, 42, 0.12);
       border-color: rgba(201, 147, 42, 0.8);
       transform: translateY(-2px);
+    }
+
+    .sound-toggle.is-active::before {
+      opacity: 1;
+      transform: scale(1);
+      animation: soundPulse 1.6s ease-in-out infinite;
+    }
+
+    @keyframes soundPulse {
+      0%, 100% { box-shadow: 0 0 0 rgba(201, 147, 42, 0); }
+      50% { box-shadow: 0 0 28px rgba(201, 147, 42, 0.26); }
     }
 
     .sound-toggle .slash {
@@ -1676,6 +1794,12 @@
         width: 100%;
         justify-content: center;
       }
+      .hero-roles {
+        letter-spacing: 0.16em;
+      }
+      .kinetic-rail {
+        display: none;
+      }
       .hero-photo-scene {
         inset: 12vh 5vw auto;
         width: 90vw;
@@ -1779,6 +1903,21 @@
       .hero h1 {
         clip-path: none;
       }
+      .hero-roles span {
+        position: static;
+        display: none;
+        animation: none !important;
+        opacity: 1;
+        transform: none;
+      }
+      .hero-roles span:first-child {
+        display: block;
+      }
+      .duel-line,
+      .kinetic-rail,
+      .sound-toggle::before {
+        animation: none !important;
+      }
     }
   </style>
 </head>
@@ -1802,8 +1941,11 @@
 
     <div class="hero-photo-scene" aria-hidden="true">
       <img id="heroSceneImage" alt="" />
+      <div class="duel-line"></div>
       <div class="scene-caption"><span>Western America / Dusk Duel Plate</span><span>Live Dossier</span></div>
     </div>
+    <div class="kinetic-rail kinetic-rail--left">Signal / Smoke / Sand</div>
+    <div class="kinetic-rail kinetic-rail--right">Audio Dossier Armed</div>
 
     <svg class="mesa-layer mesa-layer--far" viewBox="0 0 1440 260" preserveAspectRatio="none" aria-hidden="true">
       <path fill="currentColor" d="M0 194h175l42-38h130l38-72h104l28 50h151l42-74h132l61 107h153l31-45h137l43 62h173v76H0z"/>
@@ -1826,9 +1968,17 @@
       <div class="chapter-label">DOSSIER 00 / FRONTIER INCIDENT RESPONSE</div>
       <h1>THE MAGNIFICENT SEVEN</h1>
       <p>Elite Cybersecurity Unit</p>
+      <div class="hero-roles" aria-label="Rotating unit specialties">
+        <span>Red Team</span>
+        <span>Threat Intel</span>
+        <span>Forensics</span>
+        <span>Malware</span>
+        <span>SOC Watch</span>
+      </div>
       <div class="tagline">[TEAM_TAGLINE] Seven specialists ride the hostile edge between breach, intelligence, and defense.</div>
       <div class="hero-actions">
         <a class="hero-cta" href="#team">Meet The Seven</a>
+        <button class="hero-cta hero-cta--ghost" id="soundStart" type="button">Enable Soundscape</button>
       </div>
     </div>
 
@@ -2356,6 +2506,7 @@
     let dpr = Math.min(window.devicePixelRatio || 1, 2);
     let stars = [];
     let dust = [];
+    let embers = [];
     const startTime = performance.now();
 
     function resizeCanvas() {
@@ -2380,13 +2531,23 @@
         alpha: Math.random() * 0.55 + 0.25
       }));
 
-      dust = Array.from({ length: 60 }, () => ({
+      dust = Array.from({ length: 96 }, () => ({
         x: Math.random() * width,
         y: height * (0.68 + Math.random() * 0.22),
         r: Math.random() * 2.2 + 0.8,
         drift: Math.random() * 0.28 + 0.06,
         lift: Math.random() * 0.09 + 0.03,
         alpha: Math.random() * 0.18 + 0.08
+      }));
+
+      embers = Array.from({ length: 34 }, () => ({
+        x: Math.random() * width,
+        y: height * (0.56 + Math.random() * 0.38),
+        r: Math.random() * 1.6 + 0.5,
+        drift: Math.random() * 0.18 + 0.04,
+        lift: Math.random() * 0.22 + 0.08,
+        pulse: Math.random() * Math.PI * 2,
+        alpha: Math.random() * 0.22 + 0.08
       }));
     }
 
@@ -2452,12 +2613,31 @@
       ctx.globalAlpha = 1;
     }
 
+    function drawEmbers(time) {
+      embers.forEach((ember) => {
+        ember.x += ember.drift;
+        ember.y -= ember.lift;
+        if (ember.x > width + 10 || ember.y < height * 0.36) {
+          ember.x = -10;
+          ember.y = height * (0.72 + Math.random() * 0.2);
+        }
+        const pulse = Math.sin(time * 0.004 + ember.pulse) * 0.35 + 0.65;
+        ctx.globalAlpha = ember.alpha * pulse;
+        ctx.fillStyle = '#C9932A';
+        ctx.beginPath();
+        ctx.arc(ember.x, ember.y, ember.r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.globalAlpha = 1;
+    }
+
     function animateHero(time) {
       if (!isProfileOpen) {
         drawSky();
         drawStars(time);
         drawSun(time);
         drawDust(time);
+        drawEmbers(time);
       }
       if (!prefersReducedMotion) requestAnimationFrame(animateHero);
     }
@@ -2467,6 +2647,7 @@
     drawStars(startTime);
     drawSun(startTime);
     drawDust(startTime);
+    drawEmbers(startTime);
     if (!prefersReducedMotion) requestAnimationFrame(animateHero);
     window.addEventListener('resize', resizeCanvas, { passive: true });
 
@@ -2582,9 +2763,11 @@
 
     /* === AMBIENT SOUND TOGGLE === */
     const soundToggle = document.getElementById('soundToggle');
+    const soundStart = document.getElementById('soundStart');
     let audioContext = null;
-    let windSource = null;
-    let windGain = null;
+    let audioMaster = null;
+    let soundNodes = [];
+    let soundTimers = [];
     let isSoundOn = false;
 
     function createWindBuffer(context) {
@@ -2595,57 +2778,129 @@
       return buffer;
     }
 
+    function connectNode(node) {
+      node.connect(audioMaster);
+      soundNodes.push(node);
+      return node;
+    }
+
+    function playMetalHit(delay = 0) {
+      if (!audioContext || !audioMaster) return;
+      const now = audioContext.currentTime + delay;
+      const osc = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+      const filter = audioContext.createBiquadFilter();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(590 + Math.random() * 120, now);
+      osc.frequency.exponentialRampToValueAtTime(160, now + 1.1);
+      filter.type = 'bandpass';
+      filter.frequency.value = 820;
+      filter.Q.value = 6;
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.075, now + 0.025);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.25);
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(audioMaster);
+      osc.start(now);
+      osc.stop(now + 1.3);
+    }
+
+    function playEmberCrackle() {
+      if (!audioContext || !audioMaster) return;
+      const source = audioContext.createBufferSource();
+      source.buffer = createWindBuffer(audioContext);
+      const filter = audioContext.createBiquadFilter();
+      const gain = audioContext.createGain();
+      const now = audioContext.currentTime;
+      filter.type = 'highpass';
+      filter.frequency.value = 1400 + Math.random() * 1800;
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.018 + Math.random() * 0.018, now + 0.012);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.08 + Math.random() * 0.12);
+      source.connect(filter);
+      filter.connect(gain);
+      gain.connect(audioMaster);
+      source.start(now);
+      source.stop(now + 0.22);
+    }
+
     function startWind() {
       audioContext = audioContext || new (window.AudioContext || window.webkitAudioContext)();
+      audioMaster = audioContext.createGain();
+      audioMaster.gain.value = 0.085;
+      audioMaster.connect(audioContext.destination);
+
       const lowpass = audioContext.createBiquadFilter();
       lowpass.type = 'lowpass';
-      lowpass.frequency.value = 180;
+      lowpass.frequency.value = 240;
 
       const sub = audioContext.createOscillator();
       sub.type = 'sine';
-      sub.frequency.value = 40;
+      sub.frequency.value = 43;
 
       const subGain = audioContext.createGain();
-      subGain.gain.value = 0.018;
+      subGain.gain.value = 0.036;
 
-      windGain = audioContext.createGain();
-      windGain.gain.value = 0.04;
+      const windGain = audioContext.createGain();
+      windGain.gain.value = 0.065;
 
-      windSource = audioContext.createBufferSource();
+      const windSource = audioContext.createBufferSource();
       windSource.buffer = createWindBuffer(audioContext);
       windSource.loop = true;
       windSource.connect(lowpass);
       lowpass.connect(windGain);
-      windGain.connect(audioContext.destination);
+      windGain.connect(audioMaster);
       sub.connect(subGain);
-      subGain.connect(audioContext.destination);
+      subGain.connect(audioMaster);
       windSource.start();
       sub.start();
-      windSource._sub = sub;
+      soundNodes.push(windSource, sub, lowpass, windGain, subGain);
+
+      playMetalHit(0.18);
+      soundTimers.push(window.setInterval(() => playEmberCrackle(), 320 + Math.random() * 260));
+      soundTimers.push(window.setInterval(() => playMetalHit(), 8500 + Math.random() * 5000));
     }
 
     function stopWind() {
-      if (windGain) windGain.gain.setTargetAtTime(0, audioContext.currentTime, 0.08);
-      if (windSource) {
-        window.setTimeout(() => {
-          try {
-            windSource.stop();
-            windSource._sub.stop();
-          } catch {}
-          windSource = null;
-        }, 180);
+      soundTimers.forEach((timer) => window.clearInterval(timer));
+      soundTimers = [];
+      if (audioMaster) {
+        audioMaster.gain.setTargetAtTime(0, audioContext.currentTime, 0.08);
       }
+      window.setTimeout(() => {
+        soundNodes.forEach((node) => {
+          try {
+            if (typeof node.stop === 'function') node.stop();
+            if (typeof node.disconnect === 'function') node.disconnect();
+          } catch {}
+        });
+        try { audioMaster?.disconnect(); } catch {}
+        soundNodes = [];
+        audioMaster = null;
+      }, 220);
     }
 
-    soundToggle.addEventListener('click', async () => {
-      isSoundOn = !isSoundOn;
+    async function setSoundState(nextState) {
+      if (nextState === isSoundOn) return;
+      isSoundOn = nextState;
       soundToggle.classList.toggle('is-active', isSoundOn);
+      soundStart?.classList.toggle('is-active', isSoundOn);
+      if (soundStart) soundStart.textContent = isSoundOn ? 'Soundscape On' : 'Enable Soundscape';
       if (isSoundOn) {
         startWind();
         if (audioContext.state === 'suspended') await audioContext.resume();
       } else {
         stopWind();
       }
+    }
+
+    soundToggle.addEventListener('click', async () => {
+      await setSoundState(!isSoundOn);
+    });
+
+    soundStart?.addEventListener('click', async () => {
+      await setSoundState(!isSoundOn);
     });
   </script>
 </body>
