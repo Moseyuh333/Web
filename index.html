@@ -43,6 +43,8 @@
       --journey-scale: 1.26;
       --journey-y: 0px;
       --journey-x: 0px;
+      --pointer-x: 50%;
+      --pointer-y: 50%;
     }
 
     * { box-sizing: border-box; }
@@ -189,6 +191,143 @@
       height: 100%;
       background: linear-gradient(90deg, var(--color-blood), var(--color-gold));
       box-shadow: 0 0 18px rgba(201, 147, 42, 0.5);
+    }
+
+    .cinematic-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      display: grid;
+      place-items: center;
+      pointer-events: none;
+      background: #050403;
+      animation: loaderExit 1400ms var(--ease-out) 1250ms forwards;
+    }
+
+    .cinematic-loader::before,
+    .cinematic-loader::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 50%;
+      background:
+        linear-gradient(90deg, rgba(201, 147, 42, 0.16), transparent 18%, transparent 82%, rgba(139, 58, 42, 0.16)),
+        #050403;
+      animation: shutterOpen 1250ms var(--ease-out) 720ms forwards;
+    }
+
+    .cinematic-loader::before { top: 0; transform-origin: top; }
+    .cinematic-loader::after { bottom: 0; transform-origin: bottom; }
+
+    .loader-mark {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      gap: 10px;
+      color: var(--color-gold);
+      font-family: var(--font-mono);
+      font-size: 0.64rem;
+      font-weight: 700;
+      letter-spacing: 0.24em;
+      text-align: center;
+      text-transform: uppercase;
+      animation: loaderMark 900ms ease forwards;
+    }
+
+    .loader-mark strong {
+      font-family: var(--font-serif);
+      font-size: clamp(2.6rem, 7vw, 6rem);
+      line-height: 0.78;
+      letter-spacing: 0.02em;
+    }
+
+    .scene-flash {
+      position: fixed;
+      inset: 0;
+      z-index: 58;
+      pointer-events: none;
+      opacity: 0;
+      background:
+        linear-gradient(90deg, transparent, rgba(245, 240, 232, 0.18), transparent),
+        radial-gradient(circle at var(--pointer-x) var(--pointer-y), rgba(201, 147, 42, 0.2), transparent 22rem);
+      mix-blend-mode: screen;
+    }
+
+    body.is-scene-cut .scene-flash {
+      animation: sceneFlash 640ms var(--ease-out);
+    }
+
+    .spotlight-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 57;
+      pointer-events: none;
+      opacity: 0.5;
+      background:
+        radial-gradient(circle at var(--pointer-x) var(--pointer-y), rgba(201, 147, 42, 0.13), transparent 17rem),
+        radial-gradient(circle at calc(var(--pointer-x) + 8vw) calc(var(--pointer-y) + 4vh), rgba(139, 58, 42, 0.08), transparent 22rem);
+      mix-blend-mode: screen;
+      transition: opacity 220ms ease;
+    }
+
+    .scroll-rail {
+      position: fixed;
+      top: 50%;
+      right: clamp(14px, 2.4vw, 34px);
+      z-index: 54;
+      display: grid;
+      gap: 12px;
+      transform: translateY(-50%);
+    }
+
+    .rail-link {
+      position: relative;
+      width: 11px;
+      height: 42px;
+      border: 1px solid rgba(232, 213, 176, 0.22);
+      background: rgba(10, 8, 5, 0.24);
+      overflow: hidden;
+      text-indent: 100%;
+      white-space: nowrap;
+    }
+
+    .rail-link::before {
+      content: "";
+      position: absolute;
+      inset: auto 2px 2px;
+      height: 0;
+      background: linear-gradient(180deg, var(--color-gold), var(--color-blood));
+      box-shadow: 0 0 16px rgba(201, 147, 42, 0.55);
+      transition: height 320ms var(--ease-out);
+    }
+
+    .rail-link.is-active {
+      border-color: rgba(201, 147, 42, 0.82);
+      background: rgba(201, 147, 42, 0.08);
+    }
+
+    .rail-link.is-active::before {
+      height: calc(100% - 4px);
+    }
+
+    @keyframes loaderMark {
+      from { opacity: 0; transform: translateY(16px); filter: blur(8px); }
+      to { opacity: 1; transform: translateY(0); filter: blur(0); }
+    }
+
+    @keyframes shutterOpen {
+      to { transform: scaleY(0); }
+    }
+
+    @keyframes loaderExit {
+      to { opacity: 0; visibility: hidden; }
+    }
+
+    @keyframes sceneFlash {
+      0% { opacity: 0; transform: translateX(-7vw) skewX(-8deg); }
+      36% { opacity: 1; }
+      100% { opacity: 0; transform: translateX(7vw) skewX(-8deg); }
     }
 
     @keyframes roadLightSweep {
@@ -349,6 +488,14 @@
       letter-spacing: 0.16em;
       text-transform: uppercase;
       mix-blend-mode: screen;
+      transition: padding 300ms ease, background 300ms ease, backdrop-filter 300ms ease;
+    }
+
+    body.is-scrolled .site-nav {
+      padding-top: 14px;
+      padding-bottom: 14px;
+      background: linear-gradient(180deg, rgba(10, 8, 5, 0.72), rgba(10, 8, 5, 0.18));
+      backdrop-filter: blur(14px);
     }
 
     .site-brand {
@@ -431,6 +578,7 @@
       text-decoration: none;
       border-bottom: 1px solid rgba(232, 213, 176, 0.16);
       overflow: hidden;
+      transition: min-height 320ms var(--ease-out), padding 320ms var(--ease-out);
     }
 
     .index-row::before {
@@ -468,6 +616,10 @@
     .index-row:hover .index-title {
       color: var(--color-gold);
       transform: translateX(18px);
+    }
+
+    .index-row:hover {
+      min-height: 128px;
     }
 
     .index-meta {
@@ -1012,6 +1164,12 @@
       will-change: transform;
     }
 
+    .poster::after {
+      background:
+        linear-gradient(105deg, transparent 0 42%, rgba(255, 244, 214, 0.42) 48%, transparent 56%),
+        radial-gradient(circle at var(--pointer-x) var(--pointer-y), rgba(201, 147, 42, 0.18), transparent 20rem);
+    }
+
     .poster::before {
       content: "";
       position: absolute;
@@ -1042,6 +1200,24 @@
       padding: 18px 16px 64px;
       border: 1px solid rgba(139, 69, 19, 0.6);
       transform: translateZ(18px);
+    }
+
+    .poster-content::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      background:
+        linear-gradient(rgba(10, 8, 5, 0.08) 1px, transparent 1px),
+        radial-gradient(circle at var(--pointer-x) var(--pointer-y), rgba(201, 147, 42, 0.18), transparent 13rem);
+      background-size: 100% 5px, auto;
+      mix-blend-mode: multiply;
+      transition: opacity 260ms ease;
+    }
+
+    .poster:hover .poster-content::after {
+      opacity: 1;
     }
 
     .poster-meta {
@@ -1262,7 +1438,7 @@
       box-shadow: 0 26px 68px rgba(0, 0, 0, 0.28);
       opacity: 0;
       transform: translateX(90px);
-      transition: opacity 650ms var(--ease-out), transform 650ms var(--ease-out), border-color 220ms ease;
+      transition: opacity 650ms var(--ease-out), transform 650ms var(--ease-out), border-color 220ms ease, background 220ms ease;
       will-change: opacity, transform;
     }
 
@@ -1271,7 +1447,13 @@
       transform: translateX(0);
     }
 
-    .capability-card:hover { border-color: rgba(201, 147, 42, 0.56); }
+    .capability-card:hover {
+      border-color: rgba(201, 147, 42, 0.56);
+      background:
+        radial-gradient(circle at var(--pointer-x) var(--pointer-y), rgba(201, 147, 42, 0.16), transparent 18rem),
+        #0F0A06;
+      transform: translateX(0) translateY(-6px);
+    }
 
     .capability-icon {
       width: 70px;
@@ -1321,6 +1503,12 @@
       text-align: center;
       padding: 24px 10px;
       border-left: 1px solid rgba(201, 147, 42, 0.18);
+      transition: transform 320ms var(--ease-out), background 320ms ease;
+    }
+
+    .stat:hover {
+      transform: translateY(-8px);
+      background: radial-gradient(circle at 50% 0%, rgba(201, 147, 42, 0.13), transparent 12rem);
     }
 
     .stat:first-child { border-left: 0; }
@@ -1940,6 +2128,10 @@
     @media (max-width: 620px) {
       html, body, a, button { cursor: auto; }
       .cursor { display: none; }
+      .scroll-rail,
+      .spotlight-layer {
+        display: none;
+      }
       .journey-bg img {
         inset: -14vh -42vw;
         width: 184vw;
@@ -2112,9 +2304,14 @@
       .duel-line,
       .journey-bg::after,
       .journey-dust,
+      .cinematic-loader,
+      .scene-flash,
       .kinetic-rail,
       .sound-toggle::before {
         animation: none !important;
+      }
+      .cinematic-loader {
+        display: none;
       }
       ::view-transition-old(root),
       ::view-transition-new(root) {
@@ -2124,7 +2321,12 @@
   </style>
 </head>
 <body>
+  <div class="cinematic-loader" aria-hidden="true">
+    <div class="loader-mark"><span>Initializing Field Dossier</span><strong>VII</strong></div>
+  </div>
   <div class="cursor" aria-hidden="true"></div>
+  <div class="scene-flash" aria-hidden="true"></div>
+  <div class="spotlight-layer" aria-hidden="true"></div>
   <div class="journey-bg" aria-hidden="true">
     <img src="assets/endless-road-cowboy.png" alt="" />
     <div class="journey-speedlines"></div>
@@ -2135,6 +2337,13 @@
     <strong id="journeySceneTitle">The Road Opens</strong>
     <div class="journey-progress"><span></span></div>
   </div>
+  <nav class="scroll-rail" aria-label="Cinematic section navigation">
+    <a class="rail-link is-active" href="#top" data-rail-target="top">Opening</a>
+    <a class="rail-link" href="#index" data-rail-target="index">Index</a>
+    <a class="rail-link" href="#team" data-rail-target="team">Unit</a>
+    <a class="rail-link" href="#capabilities" data-rail-target="capabilities">Operations</a>
+    <a class="rail-link" href="#contact" data-rail-target="contact">Contact</a>
+  </nav>
 
   <!-- === HERO SECTION === -->
   <section class="hero" id="top" aria-label="Opening cinematic">
@@ -2715,16 +2924,26 @@
 
     /* === CUSTOM CURSOR === */
     const cursor = document.querySelector('.cursor');
+    function updatePointer(event) {
+      const x = `${event.clientX}px`;
+      const y = `${event.clientY}px`;
+      document.documentElement.style.setProperty('--pointer-x', x);
+      document.documentElement.style.setProperty('--pointer-y', y);
+      if (cursor) {
+        cursor.style.left = x;
+        cursor.style.top = y;
+      }
+    }
+
     if (cursor && !window.matchMedia('(max-width: 620px)').matches) {
-      window.addEventListener('mousemove', (event) => {
-        cursor.style.left = `${event.clientX}px`;
-        cursor.style.top = `${event.clientY}px`;
-      }, { passive: true });
+      window.addEventListener('mousemove', updatePointer, { passive: true });
 
       document.querySelectorAll('a, button, .poster, .capability-card').forEach((element) => {
         element.addEventListener('mouseenter', () => cursor.classList.add('is-hovering'));
         element.addEventListener('mouseleave', () => cursor.classList.remove('is-hovering'));
       });
+    } else {
+      window.addEventListener('pointermove', updatePointer, { passive: true });
     }
 
     /* === POSTER CINEMATIC TILT === */
@@ -2901,15 +3120,17 @@
     const heroText = document.querySelector('.hero-content');
     const journeyNo = document.getElementById('journeySceneNo');
     const journeyTitle = document.getElementById('journeySceneTitle');
+    const railLinks = [...document.querySelectorAll('.rail-link')];
     const journeyScenes = [
-      { at: 0, no: 'Scene 00', title: 'The Road Opens' },
-      { at: 0.16, no: 'Scene 01', title: 'Field Manual' },
-      { at: 0.34, no: 'Scene 02', title: 'The Unit Rides' },
-      { at: 0.56, no: 'Scene 03', title: 'Operations In Dust' },
-      { at: 0.76, no: 'Scene 04', title: 'Body Count' },
-      { at: 0.92, no: 'Scene 05', title: 'Call The Cavalry' }
+      { at: 0, no: 'Scene 00', title: 'The Road Opens', target: 'top' },
+      { at: 0.16, no: 'Scene 01', title: 'Field Manual', target: 'index' },
+      { at: 0.34, no: 'Scene 02', title: 'The Unit Rides', target: 'team' },
+      { at: 0.56, no: 'Scene 03', title: 'Operations In Dust', target: 'capabilities' },
+      { at: 0.76, no: 'Scene 04', title: 'Body Count', target: 'capabilities' },
+      { at: 0.92, no: 'Scene 05', title: 'Call The Cavalry', target: 'contact' }
     ];
     let activeJourneyScene = -1;
+    let sceneCutTimer = 0;
     let latestScroll = 0;
     let ticking = false;
 
@@ -2924,12 +3145,23 @@
       document.documentElement.style.setProperty('--journey-x', `${Math.sin(progress * Math.PI * 1.35) * 26}px`);
       const nextScene = journeyScenes.reduce((match, scene, index) => progress >= scene.at ? index : match, 0);
       if (nextScene !== activeJourneyScene) {
+        const hadScene = activeJourneyScene >= 0;
         activeJourneyScene = nextScene;
         if (journeyNo && journeyTitle) {
           journeyNo.textContent = journeyScenes[nextScene].no;
           journeyTitle.textContent = journeyScenes[nextScene].title;
         }
+        railLinks.forEach((link) => {
+          link.classList.toggle('is-active', link.dataset.railTarget === journeyScenes[nextScene].target);
+        });
+        if (hadScene && !prefersReducedMotion) {
+          document.body.classList.remove('is-scene-cut');
+          window.clearTimeout(sceneCutTimer);
+          requestAnimationFrame(() => document.body.classList.add('is-scene-cut'));
+          sceneCutTimer = window.setTimeout(() => document.body.classList.remove('is-scene-cut'), 720);
+        }
       }
+      document.body.classList.toggle('is-scrolled', y > 80);
       if (silhouettes && !window.matchMedia('(max-width: 620px)').matches) {
         silhouettes.style.transform = `translateX(-50%) translateY(${y * 0.5}px)`;
       }
