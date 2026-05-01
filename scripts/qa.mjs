@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 
 const html = readFileSync('index.html', 'utf8');
 const manifest = readFileSync('site.webmanifest', 'utf8');
@@ -8,6 +8,8 @@ const checks = {
   title: html.includes('<title>THE MAGNIFICENT SEVEN</title>'),
   meta: html.includes('og:title') && html.includes('twitter:card') && html.includes("manifestLink.href = 'site.webmanifest'"),
   heroImage: html.includes('id="heroSceneImage"') && html.includes('assignImageWithFallback'),
+  journeyAsset: html.includes('assets/endless-road-cowboy.png') && existsSync('assets/endless-road-cowboy.png'),
+  journeyMotion: html.includes('journey-bg') && html.includes('--journey-progress') && html.includes('journeyScenes'),
   noHeroSymbols: /\.hero-silhouettes[\s\S]*?display:\s*none/.test(html),
   operators: (html.match(/data-profile-id=/g) || []).length === 7,
   noDeploy: !html.includes('>Deploy</button>'),

@@ -39,4 +39,5 @@ If member photo tokens are not replaced, the page uses cinematic western fallbac
 - No React/Vue/framework runtime.
 - No build step required.
 - Uses modern browser APIs when available: Web Audio, View Transitions, Intersection Observer, Canvas.
+- Uses a local generated cinematic western background at `assets/endless-road-cowboy.png`, so the main atmosphere is not dependent on external image hosts.
 - Respects `prefers-reduced-motion`.

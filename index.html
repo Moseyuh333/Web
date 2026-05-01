@@ -39,6 +39,10 @@
       --font-mono: 'IBM Plex Mono', monospace;
       --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
       --max-width: 1220px;
+      --journey-progress: 0;
+      --journey-scale: 1.16;
+      --journey-y: 0px;
+      --journey-x: 0px;
     }
 
     * { box-sizing: border-box; }
@@ -57,6 +61,144 @@
         radial-gradient(circle at 50% 0%, rgba(201, 147, 42, 0.1), transparent 28rem),
         linear-gradient(180deg, var(--color-void), #120b05 45%, var(--color-earth));
       overflow-x: hidden;
+    }
+
+    /* === CINEMATIC JOURNEY BACKGROUND === */
+    .journey-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+      background: #080604;
+    }
+
+    .journey-bg img {
+      position: absolute;
+      inset: -8vh -8vw;
+      width: 116vw;
+      height: 116vh;
+      object-fit: cover;
+      object-position: 50% 56%;
+      opacity: 0.56;
+      filter: saturate(0.88) sepia(0.16) contrast(1.16) brightness(0.82);
+      transform:
+        translate3d(var(--journey-x), var(--journey-y), 0)
+        scale(var(--journey-scale));
+      transform-origin: 50% 62%;
+      transition: filter 600ms ease, opacity 600ms ease;
+      will-change: transform;
+    }
+
+    .journey-bg::before,
+    .journey-bg::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .journey-bg::before {
+      z-index: 2;
+      background:
+        radial-gradient(ellipse at 50% 70%, rgba(201, 147, 42, calc(0.12 + var(--journey-progress) * 0.08)), transparent 28rem),
+        linear-gradient(90deg, rgba(10, 8, 5, 0.86), rgba(10, 8, 5, 0.26) 42%, rgba(10, 8, 5, 0.7)),
+        linear-gradient(180deg, rgba(10, 8, 5, 0.1), rgba(10, 8, 5, 0.72) 72%, #0a0805);
+      mix-blend-mode: multiply;
+    }
+
+    .journey-bg::after {
+      z-index: 3;
+      background:
+        linear-gradient(104deg, transparent 0 32%, rgba(245, 240, 232, 0.11) 41%, transparent 52%),
+        radial-gradient(circle at calc(24% + var(--journey-progress) * 42%) 28%, rgba(201, 147, 42, 0.18), transparent 18rem),
+        linear-gradient(rgba(245, 240, 232, 0.04) 1px, transparent 1px);
+      background-size: auto, auto, 100% 5px;
+      mix-blend-mode: screen;
+      opacity: 0.42;
+      animation: roadLightSweep 8.8s ease-in-out infinite alternate;
+    }
+
+    .journey-speedlines {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      opacity: 0.22;
+      background:
+        linear-gradient(90deg, transparent 0 20%, rgba(201, 147, 42, 0.16) 21%, transparent 22%),
+        linear-gradient(100deg, transparent 0 52%, rgba(245, 240, 232, 0.1) 53%, transparent 56%),
+        linear-gradient(84deg, transparent 0 71%, rgba(139, 58, 42, 0.12) 72%, transparent 73%);
+      filter: blur(0.4px);
+      transform: translateX(calc(var(--journey-progress) * -42px));
+    }
+
+    .journey-dust {
+      position: absolute;
+      inset: auto -10vw 0;
+      z-index: 5;
+      height: 36vh;
+      opacity: 0.52;
+      background:
+        radial-gradient(circle at 12% 72%, rgba(201, 147, 42, 0.22), transparent 7rem),
+        radial-gradient(circle at 42% 58%, rgba(232, 213, 176, 0.14), transparent 9rem),
+        radial-gradient(circle at 78% 72%, rgba(139, 58, 42, 0.18), transparent 8rem);
+      filter: blur(14px);
+      transform: translate3d(calc(var(--journey-progress) * -90px), 0, 0);
+      animation: dustBreath 6s ease-in-out infinite alternate;
+    }
+
+    .journey-chapter {
+      position: fixed;
+      left: clamp(18px, 4vw, 52px);
+      bottom: clamp(18px, 4vw, 46px);
+      z-index: 52;
+      display: grid;
+      gap: 6px;
+      max-width: 360px;
+      color: rgba(245, 240, 232, 0.72);
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+
+    .journey-chapter strong {
+      color: var(--color-gold);
+      font-family: var(--font-serif);
+      font-size: clamp(1.7rem, 3vw, 2.6rem);
+      line-height: 0.9;
+      letter-spacing: 0.02em;
+      text-transform: none;
+      text-shadow: 0 0 26px rgba(201, 147, 42, 0.28);
+    }
+
+    .journey-progress {
+      width: min(230px, 54vw);
+      height: 1px;
+      margin-top: 6px;
+      background: rgba(232, 213, 176, 0.18);
+      overflow: hidden;
+    }
+
+    .journey-progress span {
+      display: block;
+      width: calc(var(--journey-progress) * 100%);
+      height: 100%;
+      background: linear-gradient(90deg, var(--color-blood), var(--color-gold));
+      box-shadow: 0 0 18px rgba(201, 147, 42, 0.5);
+    }
+
+    @keyframes roadLightSweep {
+      from { opacity: 0.28; transform: translateX(-2vw); }
+      to { opacity: 0.54; transform: translateX(2vw); }
+    }
+
+    @keyframes dustBreath {
+      from { opacity: 0.34; filter: blur(18px); }
+      to { opacity: 0.68; filter: blur(10px); }
     }
 
     body::before,
@@ -143,6 +285,7 @@
     section {
       position: relative;
       isolation: isolate;
+      z-index: 1;
     }
 
     .section-inner {
@@ -266,8 +409,9 @@
       padding: 96px 0;
       background:
         radial-gradient(circle at 88% 10%, rgba(201, 147, 42, 0.12), transparent 28rem),
-        linear-gradient(180deg, var(--color-void), #110904);
+        linear-gradient(180deg, rgba(10, 8, 5, 0.86), rgba(17, 9, 4, 0.84));
       overflow: hidden;
+      backdrop-filter: blur(2px);
     }
 
     .index-list {
@@ -342,7 +486,9 @@
       display: grid;
       place-items: center;
       overflow: hidden;
-      background: var(--color-void);
+      background:
+        radial-gradient(circle at 52% 62%, rgba(201, 147, 42, 0.08), transparent 36rem),
+        linear-gradient(180deg, rgba(10, 8, 5, 0.18), rgba(10, 8, 5, 0.62));
     }
 
     #heroCanvas {
@@ -382,16 +528,16 @@
 
     .hero-photo-scene {
       position: absolute;
-      inset: 7vh 4vw 10vh auto;
-      width: min(52vw, 820px);
+      inset: 6vh 3vw 9vh auto;
+      width: min(56vw, 920px);
       z-index: 2;
-      aspect-ratio: 0.82;
+      aspect-ratio: 1.38;
       border: 1px solid rgba(201, 147, 42, 0.28);
       background: #080604;
       box-shadow: 0 40px 120px rgba(0, 0, 0, 0.52), inset 0 0 80px rgba(0, 0, 0, 0.42);
       opacity: 0;
-      transform: translate3d(36px, 20px, 0) scale(0.96);
-      animation: photoSceneReveal 1400ms var(--ease-out) 1500ms forwards;
+      transform: translate3d(46px, 20px, 0) scale(0.92) rotate(0.001deg);
+      animation: photoSceneReveal 1800ms var(--ease-out) 900ms forwards, sceneFloat 9s ease-in-out 3000ms infinite alternate;
       overflow: hidden;
       will-change: opacity, transform;
     }
@@ -454,6 +600,8 @@
       object-fit: cover;
       object-position: center;
       filter: sepia(0.12) saturate(0.86) contrast(1.08);
+      transform: scale(1.06);
+      animation: sceneImageCreep 16s ease-in-out 1800ms infinite alternate;
     }
 
     .hero-photo-scene::before,
@@ -485,6 +633,16 @@
         opacity: 0.82;
         transform: translate3d(0, 0, 0) scale(1);
       }
+    }
+
+    @keyframes sceneFloat {
+      from { transform: translate3d(0, 0, 0) scale(1); }
+      to { transform: translate3d(-12px, 8px, 0) scale(1.018); }
+    }
+
+    @keyframes sceneImageCreep {
+      from { transform: scale(1.06) translateX(0); }
+      to { transform: scale(1.14) translateX(-2.4%); }
     }
 
     .scene-caption {
@@ -565,7 +723,7 @@
     .hero-content {
       position: relative;
       z-index: 3;
-      margin-top: 30vh;
+      margin-top: 34vh;
       text-align: center;
       transform: translateY(30px);
       opacity: 0;
@@ -595,7 +753,7 @@
       margin: 0;
       color: var(--color-gold);
       font-family: var(--font-serif);
-      font-size: clamp(3rem, 10vw, 7rem);
+      font-size: clamp(3.4rem, 12vw, 9rem);
       line-height: 0.82;
       font-weight: 700;
       text-shadow: 0 0 28px rgba(201, 147, 42, 0.22);
@@ -763,9 +921,10 @@
     .team {
       padding: 110px 0 120px;
       background:
-        linear-gradient(180deg, var(--color-void), #160d06 40%, var(--color-earth)),
+        linear-gradient(180deg, rgba(10, 8, 5, 0.88), rgba(22, 13, 6, 0.86) 40%, rgba(28, 15, 5, 0.88)),
         radial-gradient(circle at 20% 10%, rgba(139, 58, 42, 0.12), transparent 34rem);
       overflow: hidden;
+      backdrop-filter: blur(2px);
     }
 
     .operator-preview {
@@ -1078,8 +1237,9 @@
       padding: 120px 0;
       background:
         radial-gradient(circle at 86% 14%, rgba(201, 147, 42, 0.12), transparent 28rem),
-        linear-gradient(180deg, var(--color-earth), var(--color-void));
+        linear-gradient(180deg, rgba(28, 15, 5, 0.88), rgba(10, 8, 5, 0.9));
       overflow: hidden;
+      backdrop-filter: blur(2px);
     }
 
     .capability-stack {
@@ -1137,7 +1297,7 @@
     .stats {
       padding: 92px 0;
       background:
-        linear-gradient(90deg, rgba(10, 8, 5, 0.95), rgba(28, 15, 5, 0.98)),
+        linear-gradient(90deg, rgba(10, 8, 5, 0.9), rgba(28, 15, 5, 0.92)),
         radial-gradient(circle at 50% 50%, rgba(139, 58, 42, 0.2), transparent 40rem);
       border-top: 1px solid rgba(201, 147, 42, 0.18);
       border-bottom: 1px solid rgba(201, 147, 42, 0.18);
@@ -1188,7 +1348,8 @@
       place-items: center;
       padding: 120px 0;
       overflow: hidden;
-      background: linear-gradient(180deg, var(--color-void), #100905 66%, var(--color-earth));
+      background: linear-gradient(180deg, rgba(10, 8, 5, 0.88), rgba(16, 9, 5, 0.84) 66%, rgba(28, 15, 5, 0.9));
+      backdrop-filter: blur(2px);
     }
 
     .mesa-bg {
@@ -1777,6 +1938,15 @@
     @media (max-width: 620px) {
       html, body, a, button { cursor: auto; }
       .cursor { display: none; }
+      .journey-bg img {
+        inset: -6vh -34vw;
+        width: 168vw;
+        height: 112vh;
+        opacity: 0.48;
+      }
+      .journey-chapter {
+        display: none;
+      }
       .hero-silhouettes {
         bottom: 26vh;
         width: 112vw;
@@ -1938,6 +2108,8 @@
         display: block;
       }
       .duel-line,
+      .journey-bg::after,
+      .journey-dust,
       .kinetic-rail,
       .sound-toggle::before {
         animation: none !important;
@@ -1951,6 +2123,16 @@
 </head>
 <body>
   <div class="cursor" aria-hidden="true"></div>
+  <div class="journey-bg" aria-hidden="true">
+    <img src="assets/endless-road-cowboy.png" alt="" />
+    <div class="journey-speedlines"></div>
+    <div class="journey-dust"></div>
+  </div>
+  <div class="journey-chapter" aria-hidden="true">
+    <span id="journeySceneNo">Scene 00</span>
+    <strong id="journeySceneTitle">The Road Opens</strong>
+    <div class="journey-progress"><span></span></div>
+  </div>
 
   <!-- === HERO SECTION === -->
   <section class="hero" id="top" aria-label="Opening cinematic">
@@ -2311,7 +2493,9 @@
       document.head.appendChild(manifestLink);
     }
 
+    const localRoadImage = 'assets/endless-road-cowboy.png';
     const westernArtImages = [
+      localRoadImage,
       "https://images.pexels.com/photos/28759865/pexels-photo-28759865.jpeg?auto=compress&cs=tinysrgb&w=1400",
       "https://images.pexels.com/photos/19228337/pexels-photo-19228337.jpeg?auto=compress&cs=tinysrgb&w=1400",
       "https://images.pexels.com/photos/28759865/pexels-photo-28759865.jpeg?auto=compress&cs=tinysrgb&w=1200",
@@ -2361,7 +2545,7 @@
 
     const heroSceneImage = document.getElementById('heroSceneImage');
     if (heroSceneImage) {
-      assignImageWithFallback(heroSceneImage, [westernArtImages[1], ...imageFallbackPool], 'Cinematic western duel scene');
+      assignImageWithFallback(heroSceneImage, [localRoadImage, ...imageFallbackPool], 'Cinematic western cowboy on an endless road');
     }
     prewarmImages(imageFallbackPool);
 
@@ -2713,11 +2897,37 @@
     /* === PARALLAX === */
     const silhouettes = document.querySelector('.hero-silhouettes');
     const heroText = document.querySelector('.hero-content');
+    const journeyNo = document.getElementById('journeySceneNo');
+    const journeyTitle = document.getElementById('journeySceneTitle');
+    const journeyScenes = [
+      { at: 0, no: 'Scene 00', title: 'The Road Opens' },
+      { at: 0.16, no: 'Scene 01', title: 'Field Manual' },
+      { at: 0.34, no: 'Scene 02', title: 'The Unit Rides' },
+      { at: 0.56, no: 'Scene 03', title: 'Operations In Dust' },
+      { at: 0.76, no: 'Scene 04', title: 'Body Count' },
+      { at: 0.92, no: 'Scene 05', title: 'Call The Cavalry' }
+    ];
+    let activeJourneyScene = -1;
     let latestScroll = 0;
     let ticking = false;
 
     function updateParallax() {
       const y = latestScroll;
+      const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+      const progress = Math.min(Math.max(y / maxScroll, 0), 1);
+      const scale = 1.16 - progress * 0.34;
+      document.documentElement.style.setProperty('--journey-progress', progress.toFixed(4));
+      document.documentElement.style.setProperty('--journey-scale', scale.toFixed(4));
+      document.documentElement.style.setProperty('--journey-y', `${(-progress * 7).toFixed(2)}vh`);
+      document.documentElement.style.setProperty('--journey-x', `${Math.sin(progress * Math.PI * 1.35) * 14}px`);
+      const nextScene = journeyScenes.reduce((match, scene, index) => progress >= scene.at ? index : match, 0);
+      if (nextScene !== activeJourneyScene) {
+        activeJourneyScene = nextScene;
+        if (journeyNo && journeyTitle) {
+          journeyNo.textContent = journeyScenes[nextScene].no;
+          journeyTitle.textContent = journeyScenes[nextScene].title;
+        }
+      }
       if (silhouettes && !window.matchMedia('(max-width: 620px)').matches) {
         silhouettes.style.transform = `translateX(-50%) translateY(${y * 0.5}px)`;
       }
@@ -2733,6 +2943,7 @@
         ticking = true;
       }
     }, { passive: true });
+    updateParallax();
 
     /* === SECTION REVEALS AND STAGGER === */
     const revealObserver = new IntersectionObserver((entries) => {

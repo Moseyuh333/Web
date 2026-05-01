@@ -165,6 +165,8 @@ try {
     manifestLinks: document.querySelectorAll('link[rel="manifest"]').length,
     soundStart: !!document.querySelector('#soundStart'),
     heroImg: !!document.querySelector('#heroSceneImage') && document.querySelector('#heroSceneImage').complete,
+    journeyBg: !!document.querySelector('.journey-bg img[src*="endless-road-cowboy.png"]'),
+    journeyMotion: getComputedStyle(document.documentElement).getPropertyValue('--journey-progress').trim() !== '',
     viewTransitionRef: document.documentElement.innerHTML.includes('startViewTransition'),
     operators: document.querySelectorAll('[data-profile-id]').length,
     overflow: document.body.scrollWidth > window.innerWidth + 2,
@@ -217,6 +219,8 @@ try {
   const failed = [
     base.soundStart,
     base.heroImg,
+    base.journeyBg,
+    base.journeyMotion,
     base.viewTransitionRef,
     base.operators === 7,
     !base.overflow,
