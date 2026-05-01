@@ -40,7 +40,7 @@
       --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
       --max-width: 1220px;
       --journey-progress: 0;
-      --journey-scale: 1.16;
+      --journey-scale: 1.26;
       --journey-y: 0px;
       --journey-x: 0px;
     }
@@ -75,13 +75,13 @@
 
     .journey-bg img {
       position: absolute;
-      inset: -8vh -8vw;
-      width: 116vw;
-      height: 116vh;
+      inset: -18vh -18vw;
+      width: 136vw;
+      height: 136vh;
       object-fit: cover;
       object-position: 50% 56%;
-      opacity: 0.56;
-      filter: saturate(0.88) sepia(0.16) contrast(1.16) brightness(0.82);
+      opacity: 0.82;
+      filter: saturate(1.02) sepia(0.1) contrast(1.12) brightness(1.02);
       transform:
         translate3d(var(--journey-x), var(--journey-y), 0)
         scale(var(--journey-scale));
@@ -101,21 +101,21 @@
     .journey-bg::before {
       z-index: 2;
       background:
-        radial-gradient(ellipse at 50% 70%, rgba(201, 147, 42, calc(0.12 + var(--journey-progress) * 0.08)), transparent 28rem),
-        linear-gradient(90deg, rgba(10, 8, 5, 0.86), rgba(10, 8, 5, 0.26) 42%, rgba(10, 8, 5, 0.7)),
-        linear-gradient(180deg, rgba(10, 8, 5, 0.1), rgba(10, 8, 5, 0.72) 72%, #0a0805);
+        radial-gradient(ellipse at 50% 70%, rgba(201, 147, 42, calc(0.18 + var(--journey-progress) * 0.12)), transparent 30rem),
+        linear-gradient(90deg, rgba(10, 8, 5, 0.5), rgba(10, 8, 5, 0.08) 42%, rgba(10, 8, 5, 0.42)),
+        linear-gradient(180deg, rgba(10, 8, 5, 0), rgba(10, 8, 5, 0.36) 76%, #0a0805);
       mix-blend-mode: multiply;
     }
 
     .journey-bg::after {
       z-index: 3;
       background:
-        linear-gradient(104deg, transparent 0 32%, rgba(245, 240, 232, 0.11) 41%, transparent 52%),
-        radial-gradient(circle at calc(24% + var(--journey-progress) * 42%) 28%, rgba(201, 147, 42, 0.18), transparent 18rem),
+        linear-gradient(104deg, transparent 0 32%, rgba(245, 240, 232, 0.16) 41%, transparent 52%),
+        radial-gradient(circle at calc(24% + var(--journey-progress) * 42%) 28%, rgba(201, 147, 42, 0.24), transparent 18rem),
         linear-gradient(rgba(245, 240, 232, 0.04) 1px, transparent 1px);
       background-size: auto, auto, 100% 5px;
       mix-blend-mode: screen;
-      opacity: 0.42;
+      opacity: 0.58;
       animation: roadLightSweep 8.8s ease-in-out infinite alternate;
     }
 
@@ -123,7 +123,7 @@
       position: absolute;
       inset: 0;
       z-index: 4;
-      opacity: 0.22;
+      opacity: 0.32;
       background:
         linear-gradient(90deg, transparent 0 20%, rgba(201, 147, 42, 0.16) 21%, transparent 22%),
         linear-gradient(100deg, transparent 0 52%, rgba(245, 240, 232, 0.1) 53%, transparent 56%),
@@ -137,7 +137,7 @@
       inset: auto -10vw 0;
       z-index: 5;
       height: 36vh;
-      opacity: 0.52;
+      opacity: 0.7;
       background:
         radial-gradient(circle at 12% 72%, rgba(201, 147, 42, 0.22), transparent 7rem),
         radial-gradient(circle at 42% 58%, rgba(232, 213, 176, 0.14), transparent 9rem),
@@ -212,13 +212,13 @@
 
     body::before {
       background:
-        radial-gradient(ellipse at center, transparent 42%, rgba(0, 0, 0, 0.34) 76%, rgba(0, 0, 0, 0.78)),
-        linear-gradient(90deg, rgba(201, 147, 42, 0.03), transparent 18%, transparent 82%, rgba(139, 58, 42, 0.035));
+        radial-gradient(ellipse at center, transparent 46%, rgba(0, 0, 0, 0.18) 78%, rgba(0, 0, 0, 0.52)),
+        linear-gradient(90deg, rgba(201, 147, 42, 0.025), transparent 18%, transparent 82%, rgba(139, 58, 42, 0.03));
       mix-blend-mode: multiply;
     }
 
     body::after {
-      opacity: 0.16;
+      opacity: 0.1;
       background-image:
         linear-gradient(rgba(245, 240, 232, 0.05) 1px, transparent 1px),
         radial-gradient(circle at 22% 17%, rgba(255, 255, 255, 0.13), transparent 1px),
@@ -409,7 +409,7 @@
       padding: 96px 0;
       background:
         radial-gradient(circle at 88% 10%, rgba(201, 147, 42, 0.12), transparent 28rem),
-        linear-gradient(180deg, rgba(10, 8, 5, 0.86), rgba(17, 9, 4, 0.84));
+        linear-gradient(180deg, rgba(10, 8, 5, 0.5), rgba(17, 9, 4, 0.56));
       overflow: hidden;
       backdrop-filter: blur(2px);
     }
@@ -497,6 +497,8 @@
       width: 100%;
       height: 100%;
       z-index: 0;
+      opacity: 0.68;
+      mix-blend-mode: screen;
       will-change: transform;
     }
 
@@ -506,7 +508,7 @@
       inset: auto 0 0;
       height: 35vh;
       background:
-        linear-gradient(180deg, transparent, rgba(10, 8, 5, 0.78) 62%, var(--color-void)),
+        linear-gradient(180deg, transparent, rgba(10, 8, 5, 0.42) 62%, rgba(10, 8, 5, 0.82)),
         radial-gradient(ellipse at 50% 100%, rgba(139, 58, 42, 0.22), transparent 56%);
       z-index: 1;
       pointer-events: none;
@@ -519,7 +521,7 @@
       z-index: 1;
       pointer-events: none;
       background:
-        radial-gradient(ellipse at 50% 72%, rgba(201, 147, 42, 0.22), transparent 34%),
+        radial-gradient(ellipse at 50% 72%, rgba(201, 147, 42, 0.16), transparent 34%),
         linear-gradient(104deg, transparent 0 28%, rgba(245, 240, 232, 0.055) 34%, transparent 48%),
         linear-gradient(76deg, transparent 0 55%, rgba(139, 58, 42, 0.08) 64%, transparent 78%);
       mix-blend-mode: screen;
@@ -614,7 +616,7 @@
 
     .hero-photo-scene::before {
       background:
-        linear-gradient(90deg, rgba(10, 8, 5, 0.88), transparent 34%, transparent 66%, rgba(10, 8, 5, 0.5)),
+        linear-gradient(90deg, rgba(10, 8, 5, 0.42), transparent 34%, transparent 66%, rgba(10, 8, 5, 0.24)),
         radial-gradient(circle at 58% 28%, rgba(201, 147, 42, 0.2), transparent 22rem);
       mix-blend-mode: multiply;
     }
@@ -921,7 +923,7 @@
     .team {
       padding: 110px 0 120px;
       background:
-        linear-gradient(180deg, rgba(10, 8, 5, 0.88), rgba(22, 13, 6, 0.86) 40%, rgba(28, 15, 5, 0.88)),
+        linear-gradient(180deg, rgba(10, 8, 5, 0.56), rgba(22, 13, 6, 0.62) 40%, rgba(28, 15, 5, 0.68)),
         radial-gradient(circle at 20% 10%, rgba(139, 58, 42, 0.12), transparent 34rem);
       overflow: hidden;
       backdrop-filter: blur(2px);
@@ -1237,7 +1239,7 @@
       padding: 120px 0;
       background:
         radial-gradient(circle at 86% 14%, rgba(201, 147, 42, 0.12), transparent 28rem),
-        linear-gradient(180deg, rgba(28, 15, 5, 0.88), rgba(10, 8, 5, 0.9));
+        linear-gradient(180deg, rgba(28, 15, 5, 0.62), rgba(10, 8, 5, 0.66));
       overflow: hidden;
       backdrop-filter: blur(2px);
     }
@@ -1297,7 +1299,7 @@
     .stats {
       padding: 92px 0;
       background:
-        linear-gradient(90deg, rgba(10, 8, 5, 0.9), rgba(28, 15, 5, 0.92)),
+        linear-gradient(90deg, rgba(10, 8, 5, 0.68), rgba(28, 15, 5, 0.72)),
         radial-gradient(circle at 50% 50%, rgba(139, 58, 42, 0.2), transparent 40rem);
       border-top: 1px solid rgba(201, 147, 42, 0.18);
       border-bottom: 1px solid rgba(201, 147, 42, 0.18);
@@ -1348,7 +1350,7 @@
       place-items: center;
       padding: 120px 0;
       overflow: hidden;
-      background: linear-gradient(180deg, rgba(10, 8, 5, 0.88), rgba(16, 9, 5, 0.84) 66%, rgba(28, 15, 5, 0.9));
+      background: linear-gradient(180deg, rgba(10, 8, 5, 0.58), rgba(16, 9, 5, 0.62) 66%, rgba(28, 15, 5, 0.76));
       backdrop-filter: blur(2px);
     }
 
@@ -1939,10 +1941,10 @@
       html, body, a, button { cursor: auto; }
       .cursor { display: none; }
       .journey-bg img {
-        inset: -6vh -34vw;
-        width: 168vw;
-        height: 112vh;
-        opacity: 0.48;
+        inset: -14vh -42vw;
+        width: 184vw;
+        height: 128vh;
+        opacity: 0.72;
       }
       .journey-chapter {
         display: none;
@@ -2915,11 +2917,11 @@
       const y = latestScroll;
       const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
       const progress = Math.min(Math.max(y / maxScroll, 0), 1);
-      const scale = 1.16 - progress * 0.34;
+      const scale = 1.26 - progress * 0.52;
       document.documentElement.style.setProperty('--journey-progress', progress.toFixed(4));
       document.documentElement.style.setProperty('--journey-scale', scale.toFixed(4));
-      document.documentElement.style.setProperty('--journey-y', `${(-progress * 7).toFixed(2)}vh`);
-      document.documentElement.style.setProperty('--journey-x', `${Math.sin(progress * Math.PI * 1.35) * 14}px`);
+      document.documentElement.style.setProperty('--journey-y', `${(-progress * 16).toFixed(2)}vh`);
+      document.documentElement.style.setProperty('--journey-x', `${Math.sin(progress * Math.PI * 1.35) * 26}px`);
       const nextScene = journeyScenes.reduce((match, scene, index) => progress >= scene.at ? index : match, 0);
       if (nextScene !== activeJourneyScene) {
         activeJourneyScene = nextScene;
