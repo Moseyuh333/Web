@@ -370,6 +370,71 @@
       opacity: 0.8;
     }
 
+    .hero-photo-scene {
+      position: absolute;
+      inset: 9vh 6vw 13vh auto;
+      width: min(44vw, 680px);
+      z-index: 2;
+      aspect-ratio: 0.82;
+      border: 1px solid rgba(201, 147, 42, 0.28);
+      background:
+        linear-gradient(180deg, rgba(10, 8, 5, 0.02), rgba(10, 8, 5, 0.72)),
+        var(--hero-photo) center / cover;
+      box-shadow: 0 40px 120px rgba(0, 0, 0, 0.52), inset 0 0 80px rgba(0, 0, 0, 0.42);
+      opacity: 0;
+      transform: translate3d(36px, 20px, 0) scale(0.96);
+      animation: photoSceneReveal 1400ms var(--ease-out) 1500ms forwards;
+      overflow: hidden;
+      will-change: opacity, transform;
+    }
+
+    .hero-photo-scene::before,
+    .hero-photo-scene::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .hero-photo-scene::before {
+      background:
+        linear-gradient(90deg, rgba(10, 8, 5, 0.88), transparent 34%, transparent 66%, rgba(10, 8, 5, 0.5)),
+        radial-gradient(circle at 58% 28%, rgba(201, 147, 42, 0.2), transparent 22rem);
+      mix-blend-mode: multiply;
+    }
+
+    .hero-photo-scene::after {
+      background:
+        linear-gradient(110deg, transparent 0 40%, rgba(245, 240, 232, 0.13) 47%, transparent 55%),
+        linear-gradient(rgba(245, 240, 232, 0.05) 1px, transparent 1px);
+      background-size: auto, 100% 4px;
+      mix-blend-mode: screen;
+      opacity: 0.5;
+    }
+
+    @keyframes photoSceneReveal {
+      to {
+        opacity: 0.82;
+        transform: translate3d(0, 0, 0) scale(1);
+      }
+    }
+
+    .scene-caption {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 18px;
+      z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      color: rgba(245, 240, 232, 0.72);
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
     .mesa-layer {
       position: absolute;
       left: -5vw;
@@ -588,7 +653,7 @@
     }
 
     .operator-preview.is-visible {
-      opacity: 0.42;
+      opacity: 0.62;
       transform: translate3d(0, 0, 0) scale(1);
       filter: blur(0) saturate(1);
     }
@@ -611,7 +676,7 @@
       object-fit: cover;
       object-position: center bottom;
       opacity: 0.95;
-      filter: contrast(1.2) sepia(0.25);
+      filter: contrast(1.2) sepia(0.16) saturate(0.9);
     }
 
     .team-header {
@@ -733,10 +798,10 @@
 
     .avatar {
       position: relative;
-      width: 128px;
+      width: 148px;
       aspect-ratio: 1;
       margin: 0 auto 18px;
-      border-radius: 50%;
+      border-radius: 0;
       border: 3px solid #8B4513;
       outline: 1px solid var(--color-gold);
       outline-offset: 4px;
@@ -770,6 +835,7 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+      object-position: center;
       filter: sepia(1) contrast(1.08) saturate(0.85);
       transition: filter 300ms ease, transform 300ms ease;
     }
@@ -1601,6 +1667,16 @@
         width: 100%;
         justify-content: center;
       }
+      .hero-photo-scene {
+        inset: 12vh 5vw auto;
+        width: 90vw;
+        height: 48vh;
+        aspect-ratio: auto;
+        opacity: 0.34;
+      }
+      .scene-caption {
+        display: none;
+      }
       .profile-takeover {
         padding: 70px 18px 28px;
         gap: 22px;
@@ -1714,6 +1790,10 @@
     </nav>
 
     <canvas id="heroCanvas"></canvas>
+
+    <div class="hero-photo-scene" aria-hidden="true">
+      <div class="scene-caption"><span>Western America / Dusk Duel Plate</span><span>Live Dossier</span></div>
+    </div>
 
     <svg class="mesa-layer mesa-layer--far" viewBox="0 0 1440 260" preserveAspectRatio="none" aria-hidden="true">
       <path fill="currentColor" d="M0 194h175l42-38h130l38-72h104l28 50h151l42-74h132l61 107h153l31-45h137l43 62h173v76H0z"/>
@@ -2036,23 +2116,30 @@
     const operatorPreview = document.getElementById('operatorPreview');
     let currentProfileIndex = 0;
 
+    const westernArtImages = [
+      "https://images.pexels.com/photos/28759865/pexels-photo-28759865.jpeg?auto=compress&cs=tinysrgb&w=1400",
+      "https://cdn.pixabay.com/photo/2011/02/11/22/37/cowboy-4896_1280.jpg",
+      "https://images.pexels.com/photos/19228337/pexels-photo-19228337.jpeg?auto=compress&cs=tinysrgb&w=1400",
+      "https://cdn.pixabay.com/photo/2015/08/05/04/02/people-875597_640.jpg",
+      "https://images.pexels.com/photos/28759865/pexels-photo-28759865.jpeg?auto=compress&cs=tinysrgb&w=1200&sat=-30",
+      "https://cdn.pixabay.com/photo/2011/02/11/22/37/cowboy-4896_1280.jpg",
+      "https://images.pexels.com/photos/19228337/pexels-photo-19228337.jpeg?auto=compress&cs=tinysrgb&w=1200"
+    ];
+
     members.forEach((member) => {
       member.theme = member.theme || member.id;
       member.shortIntro = member.shortIntro || member.profileStory;
+      member.art = member.art || westernArtImages[Number(member.order) - 1];
     });
+
+    document.documentElement.style.setProperty('--hero-photo', `url("${westernArtImages[1]}")`);
 
     function isPlaceholder(value) {
       return !value || value.trim().startsWith('[');
     }
 
-    function fallbackPortrait(member) {
-      return `<svg viewBox="0 0 360 460" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <rect width="360" height="460" fill="transparent"/>
-        <path d="M76 180c26-28 62-43 104-43s78 15 104 43l58-18 8 31c-40 26-79 28-110 9-8 17-20 31-38 39v35l49 31 24 102H85l24-102 49-31v-35c-18-8-30-22-38-39-31 19-70 17-110-9l8-31 58 18Z" fill="#030201"/>
-        <path d="M48 128c55-31 209-31 264 0-24 34-240 34-264 0Z" fill="#030201"/>
-        <path d="M132 67c31-22 65-22 96 0l23 65H109l23-65Z" fill="#030201"/>
-        <path d="M80 412c43-26 157-26 200 0" stroke="${member.accent}" stroke-width="3" opacity=".42"/>
-      </svg>`;
+    function fallbackPortrait(member, alt = "") {
+      return `<img src="${member.art}" alt="${alt}" loading="lazy" />`;
     }
 
     function renderProfile(member) {
@@ -2073,7 +2160,7 @@
       const portrait = document.getElementById('profilePortrait');
       portrait.innerHTML = '';
       if (isPlaceholder(member.photo)) {
-        portrait.innerHTML = fallbackPortrait(member);
+        portrait.innerHTML = fallbackPortrait(member, `${member.title} western cinematic art`);
       } else {
         const image = document.createElement('img');
         image.src = member.photo;
@@ -2160,7 +2247,15 @@
     /* === PHOTO TOKEN HYDRATION === */
     document.querySelectorAll('.avatar img[data-photo]').forEach((image) => {
       const photo = image.dataset.photo.trim();
-      if (photo && !photo.startsWith('[')) image.src = photo;
+      const poster = image.closest('.poster');
+      const profileId = poster?.querySelector('.poster-action')?.dataset.profileId;
+      const member = members.find((item) => item.id === profileId);
+      if (photo && !photo.startsWith('[')) {
+        image.src = photo;
+      } else if (member?.art) {
+        image.src = member.art;
+        image.alt = `${member.title} western cinematic art`;
+      }
     });
 
     /* === OPERATOR HOVER PREVIEW === */
