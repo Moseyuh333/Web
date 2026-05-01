@@ -3,6 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="THE MAGNIFICENT SEVEN is a cinematic cyber-western portfolio for seven elite cybersecurity operators." />
+  <meta name="theme-color" content="#0A0805" />
+  <meta property="og:title" content="THE MAGNIFICENT SEVEN" />
+  <meta property="og:description" content="Elite cybersecurity operators for hostile terrain." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://images.pexels.com" />
+  <link rel="preconnect" href="https://images.unsplash.com" />
   <title>THE MAGNIFICENT SEVEN</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&family=IBM+Plex+Mono:wght@400;600;700&display=swap');
@@ -692,6 +702,20 @@
       color: var(--color-gold);
       border-color: rgba(201, 147, 42, 0.8);
       box-shadow: 0 0 32px rgba(201, 147, 42, 0.16);
+    }
+
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation-duration: 620ms;
+      animation-timing-function: var(--ease-out);
+    }
+
+    ::view-transition-old(root) {
+      filter: brightness(0.75) blur(2px);
+    }
+
+    ::view-transition-new(root) {
+      filter: brightness(1);
     }
 
     .hero-cta::after,
@@ -1918,6 +1942,10 @@
       .sound-toggle::before {
         animation: none !important;
       }
+      ::view-transition-old(root),
+      ::view-transition-new(root) {
+        animation: none !important;
+      }
     }
   </style>
 </head>
@@ -1978,7 +2006,7 @@
       <div class="tagline">[TEAM_TAGLINE] Seven specialists ride the hostile edge between breach, intelligence, and defense.</div>
       <div class="hero-actions">
         <a class="hero-cta" href="#team">Meet The Seven</a>
-        <button class="hero-cta hero-cta--ghost" id="soundStart" type="button">Enable Soundscape</button>
+        <button class="hero-cta hero-cta--ghost" id="soundStart" type="button" aria-pressed="false">Enable Soundscape</button>
       </div>
     </div>
 
@@ -2077,7 +2105,7 @@
 
   <div class="toast" id="toast">Email copied to clipboard</div>
 
-  <button class="sound-toggle" id="soundToggle" type="button" aria-label="Toggle ambient sound">
+  <button class="sound-toggle" id="soundToggle" type="button" aria-label="Toggle ambient sound" aria-pressed="false">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M17 9c1 1 1.5 2 1.5 3S18 14 17 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path class="slash" d="M3 3l18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
   </button>
 
@@ -2276,6 +2304,13 @@
     const operatorPreview = document.getElementById('operatorPreview');
     let currentProfileIndex = 0;
 
+    if (location.protocol === 'http:' || location.protocol === 'https:') {
+      const manifestLink = document.createElement('link');
+      manifestLink.rel = 'manifest';
+      manifestLink.href = 'site.webmanifest';
+      document.head.appendChild(manifestLink);
+    }
+
     const westernArtImages = [
       "https://images.pexels.com/photos/28759865/pexels-photo-28759865.jpeg?auto=compress&cs=tinysrgb&w=1400",
       "https://images.pexels.com/photos/19228337/pexels-photo-19228337.jpeg?auto=compress&cs=tinysrgb&w=1400",
@@ -2289,6 +2324,14 @@
       ...westernArtImages,
       "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1400&q=80"
     ];
+
+    function runViewTransition(update) {
+      if (prefersReducedMotion || !document.startViewTransition) {
+        update();
+        return;
+      }
+      document.startViewTransition(update);
+    }
 
     members.forEach((member) => {
       member.theme = member.theme || member.id;
@@ -2308,10 +2351,19 @@
       image.src = sources[index];
     }
 
+    function prewarmImages(urls) {
+      urls.slice(0, 4).forEach((url) => {
+        const image = new Image();
+        image.decoding = 'async';
+        image.src = url;
+      });
+    }
+
     const heroSceneImage = document.getElementById('heroSceneImage');
     if (heroSceneImage) {
       assignImageWithFallback(heroSceneImage, [westernArtImages[1], ...imageFallbackPool], 'Cinematic western duel scene');
     }
+    prewarmImages(imageFallbackPool);
 
     function isPlaceholder(value) {
       return !value || value.trim().startsWith('[');
@@ -2380,20 +2432,24 @@
       if (!member) return;
       currentProfileIndex = members.findIndex((item) => item.id === profileId);
       activeProfileTrigger = triggerButton;
-      isProfileOpen = true;
-      renderProfile(member);
-      document.body.classList.add('is-profile-open');
-      profileTakeover.setAttribute('aria-hidden', 'false');
-      profileTakeover.classList.add('is-open');
+      runViewTransition(() => {
+        isProfileOpen = true;
+        renderProfile(member);
+        document.body.classList.add('is-profile-open');
+        profileTakeover.setAttribute('aria-hidden', 'false');
+        profileTakeover.classList.add('is-open');
+      });
       window.setTimeout(() => profileClose.focus(), prefersReducedMotion ? 0 : 260);
     }
 
     function closeProfile() {
       if (!isProfileOpen) return;
-      isProfileOpen = false;
-      profileTakeover.classList.remove('is-open');
-      profileTakeover.setAttribute('aria-hidden', 'true');
-      document.body.classList.remove('is-profile-open');
+      runViewTransition(() => {
+        isProfileOpen = false;
+        profileTakeover.classList.remove('is-open');
+        profileTakeover.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('is-profile-open');
+      });
       if (activeProfileTrigger) activeProfileTrigger.focus();
     }
 
@@ -2403,7 +2459,7 @@
       profileTakeover.style.setProperty('--profile-switch-dir', direction > 0 ? '-22px' : '22px');
       profileTakeover.classList.add('is-switching');
       window.setTimeout(() => {
-        renderProfile(members[currentProfileIndex]);
+        runViewTransition(() => renderProfile(members[currentProfileIndex]));
         profileTakeover.style.setProperty('--profile-switch-dir', direction > 0 ? '22px' : '-22px');
         window.setTimeout(() => profileTakeover.classList.remove('is-switching'), prefersReducedMotion ? 0 : 80);
       }, prefersReducedMotion ? 0 : 180);
@@ -2417,11 +2473,14 @@
     profilePrev.addEventListener('click', () => switchProfile(-1));
     profileNext.addEventListener('click', () => switchProfile(1));
 
-    window.addEventListener('keydown', (event) => {
+    function handleGlobalKeydown(event) {
       if (event.key === 'Escape') closeProfile();
       if (event.key === 'ArrowLeft') switchProfile(-1);
       if (event.key === 'ArrowRight') switchProfile(1);
-    });
+    }
+
+    window.addEventListener('keydown', handleGlobalKeydown);
+    document.addEventListener('keydown', handleGlobalKeydown);
 
     /* === PHOTO TOKEN HYDRATION === */
     document.querySelectorAll('.avatar img[data-photo]').forEach((image) => {
@@ -2885,8 +2944,12 @@
       if (nextState === isSoundOn) return;
       isSoundOn = nextState;
       soundToggle.classList.toggle('is-active', isSoundOn);
+      soundToggle.setAttribute('aria-pressed', String(isSoundOn));
       soundStart?.classList.toggle('is-active', isSoundOn);
-      if (soundStart) soundStart.textContent = isSoundOn ? 'Soundscape On' : 'Enable Soundscape';
+      if (soundStart) {
+        soundStart.textContent = isSoundOn ? 'Soundscape On' : 'Enable Soundscape';
+        soundStart.setAttribute('aria-pressed', String(isSoundOn));
+      }
       if (isSoundOn) {
         startWind();
         if (audioContext.state === 'suspended') await audioContext.resume();
@@ -2902,6 +2965,8 @@
     soundStart?.addEventListener('click', async () => {
       await setSoundState(!isSoundOn);
     });
+
+    window.__magnificentSevenReady = true;
   </script>
 </body>
 </html>

@@ -1,0 +1,10 @@
+{
+  "name": "THE MAGNIFICENT SEVEN",
+  "short_name": "Magnificent Seven",
+  "description": "Elite cybersecurity operators for hostile terrain.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0A0805",
+  "theme_color": "#0A0805",
+  "icons": []
+}
