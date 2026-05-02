@@ -6,7 +6,7 @@ import { extname, join, normalize, resolve } from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
 
 const root = resolve('.');
-const port = Number(process.env.PORT || 4173);
+const port = Number(process.env.PORT || (4173 + Math.floor(Math.random() * 1200)));
 const debugPort = Number(process.env.DEBUG_PORT || (9223 + Math.floor(Math.random() * 1000)));
 const chromePath = [
   'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
@@ -195,6 +195,8 @@ try {
   await client.send('Input.dispatchKeyEvent', { type: 'keyDown', key: '2', code: 'Digit2', windowsVirtualKeyCode: 50 });
   await client.send('Input.dispatchKeyEvent', { type: 'keyUp', key: '2', code: 'Digit2', windowsVirtualKeyCode: 50 });
   const fpsAfterMove = await evaluate(client, `window.__fpsDebug.snapshot().player`);
+  await delay(450);
+  const fpsAfterStop = await evaluate(client, `window.__fpsDebug.snapshot().player`);
   await evaluate(client, `document.querySelector('#fpsCanvas').click();`);
   await delay(220);
   const fpsAfterShot = await evaluate(client, `window.__fpsDebug.snapshot()`);
@@ -207,6 +209,7 @@ try {
     const log = document.querySelector('#fpsLog')?.textContent || '';
     const state = window.__fpsDebug.snapshot();
     const moved = Math.hypot(state.player.x - ${fpsBeforeMove.x}, state.player.y - ${fpsBeforeMove.y}) > 0.1;
+    const stopped = Math.hypot(state.player.x - ${fpsAfterStop.x}, state.player.y - ${fpsAfterStop.y}) < 0.04;
     const safePlayer = window.__fpsDebug.functions.walkable(state.player.x, state.player.y);
     const safeEnemies = state.enemies.every((enemy) => enemy.walkable);
     return win.classList.contains('is-open') &&
@@ -216,12 +219,19 @@ try {
       ${fpsAfterShot.ammo.marshal.mag} < 5 &&
       state.ammo.marshal.mag === 5 &&
       state.ammo.marshal.reserve === 19 &&
+      state.mapSize.width >= 24 &&
+      state.mapSize.height >= 16 &&
       moved &&
+      stopped &&
       safePlayer &&
       safeEnemies &&
       log.length > 8;
   })()`);
+  await evaluate(client, `window.__fpsDebug.snapshot(); window.dispatchEvent(new Event('blur'));`);
+  const fpsBlurClearsInput = await evaluate(client, `window.__fpsDebug.snapshot().menuHidden && window.__fpsDebug.snapshot().open`);
   await evaluate(client, `document.querySelector('#fpsClose').click();`);
+  await waitFor(client, `!document.querySelector('#fpsWindow').classList.contains('is-open') && !document.body.classList.contains('is-profile-open')`, 3000);
+  await delay(200);
 
   await evaluate(client, `document.querySelector('#soundStart').click();`);
   await delay(300);
@@ -257,7 +267,7 @@ try {
 
   client.close();
 
-  const results = { base, duelInteraction, sound, profile, next, esc, mobile, errors };
+  const results = { base, duelInteraction, fpsBlurClearsInput, sound, profile, next, esc, mobile, errors };
   console.log(JSON.stringify(results, null, 2));
 
   const failed = [
@@ -269,6 +279,7 @@ try {
     base.duelGame,
     base.fpsGame,
     duelInteraction,
+    fpsBlurClearsInput,
     base.viewTransitionRef,
     base.operators === 7,
     !base.overflow,

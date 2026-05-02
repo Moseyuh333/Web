@@ -1780,14 +1780,14 @@
 
     .fps-window::before {
       background:
-        linear-gradient(rgba(245, 240, 232, 0.05) 1px, transparent 1px),
-        radial-gradient(ellipse at center, transparent 45%, rgba(0, 0, 0, 0.55));
+        linear-gradient(rgba(245, 240, 232, 0.035) 1px, transparent 1px),
+        radial-gradient(ellipse at center, transparent 52%, rgba(0, 0, 0, 0.34));
       background-size: 100% 4px, auto;
       mix-blend-mode: soft-light;
     }
 
     .fps-window::after {
-      background: radial-gradient(circle at 50% 50%, transparent 48%, rgba(0, 0, 0, 0.48));
+      background: radial-gradient(circle at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.3));
     }
 
     #fpsCanvas {
@@ -1900,12 +1900,12 @@
 
     .fps-menu {
       position: absolute;
-      inset: 0;
+      left: clamp(16px, 3vw, 40px);
+      bottom: clamp(16px, 3vw, 40px);
       z-index: 5;
-      display: grid;
-      place-items: center;
+      width: min(430px, calc(100% - 32px));
       padding: 24px;
-      background: radial-gradient(circle at 50% 46%, rgba(201, 147, 42, 0.12), rgba(5, 4, 3, 0.72) 44%, rgba(5, 4, 3, 0.92));
+      background: transparent;
       transition: opacity 260ms ease, visibility 260ms ease;
     }
 
@@ -1916,11 +1916,11 @@
     }
 
     .fps-menu-card {
-      max-width: 620px;
-      padding: clamp(22px, 4vw, 38px);
+      max-width: 100%;
+      padding: clamp(18px, 3vw, 28px);
       border: 1px solid rgba(201, 147, 42, 0.34);
-      background: rgba(10, 8, 5, 0.66);
-      text-align: center;
+      background: rgba(10, 8, 5, 0.72);
+      text-align: left;
       backdrop-filter: blur(16px);
       box-shadow: 0 30px 100px rgba(0, 0, 0, 0.46);
     }
@@ -1929,27 +1929,39 @@
       margin: 0 0 16px;
       color: var(--color-gold);
       font-family: var(--font-serif);
-      font-size: clamp(3rem, 8vw, 6.4rem);
-      line-height: 0.78;
+      font-size: clamp(2rem, 5vw, 3.8rem);
+      line-height: 0.86;
     }
 
     .fps-menu-card p {
-      margin: 0 auto 22px;
+      margin: 0 0 20px;
       max-width: 480px;
       color: rgba(245, 240, 232, 0.74);
       line-height: 1.7;
     }
 
+    .fps-menu-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
     .fps-menu-card button {
       padding: 14px 18px;
-      color: var(--color-void);
-      border: 0;
-      background: var(--color-gold);
+      color: rgba(245, 240, 232, 0.86);
+      border: 1px solid rgba(201, 147, 42, 0.34);
+      background: rgba(10, 8, 5, 0.58);
       font-family: var(--font-mono);
       font-size: 0.72rem;
       font-weight: 800;
       letter-spacing: 0.16em;
       text-transform: uppercase;
+    }
+
+    .fps-menu-card button:first-child {
+      color: var(--color-void);
+      border-color: transparent;
+      background: var(--color-gold);
     }
 
     .duel-stage::before,
@@ -3171,9 +3183,12 @@
     </div>
     <div class="fps-menu" id="fpsMenu">
       <div class="fps-menu-card">
-        <h3>3D Duel</h3>
-        <p>WASD to move. Mouse to aim. Click to fire. R reloads. 1/2/3 swaps weapons. Shift walks faster. Clear the arena before the hostile operators burn through your armor.</p>
-        <button type="button" id="fpsDeploy">Enter Arena</button>
+        <h3 id="fpsMenuTitle">3D Duel</h3>
+        <p id="fpsMenuBody">WASD to move. Mouse to aim. Click to fire. R reloads. 1/2/3 swaps weapons. Shift walks faster. Clear the arena before the hostile operators burn through your armor.</p>
+        <div class="fps-menu-actions">
+          <button type="button" id="fpsDeploy">Enter Arena</button>
+          <button type="button" id="fpsMenuExit">Exit</button>
+        </div>
       </div>
     </div>
   </div>
@@ -4100,7 +4115,10 @@
     const fpsClose = document.getElementById('fpsClose');
     const fpsCanvas = document.getElementById('fpsCanvas');
     const fpsMenu = document.getElementById('fpsMenu');
+    const fpsMenuTitle = document.getElementById('fpsMenuTitle');
+    const fpsMenuBody = document.getElementById('fpsMenuBody');
     const fpsDeploy = document.getElementById('fpsDeploy');
+    const fpsMenuExit = document.getElementById('fpsMenuExit');
     const fpsCtx = fpsCanvas?.getContext('2d', { alpha: false });
     const fpsHud = {
       health: document.getElementById('fpsHealth'),
@@ -4114,18 +4132,22 @@
     };
 
     const fpsMap = [
-      "1111111111111111",
-      "1000000000000001",
-      "1020002000200001",
-      "1000110000110001",
-      "1000000000000001",
-      "1000200110002001",
-      "1000000110000001",
-      "1000000000000001",
-      "1000110000110001",
-      "1000002000000001",
-      "1000000000000001",
-      "1111111111111111"
+      "111111111111111111111111",
+      "100000000000000000000001",
+      "100020000020000000200001",
+      "100000000000000000000001",
+      "100000111000000111000001",
+      "100000000000000000000001",
+      "100020000000200000000001",
+      "100000000000000000020001",
+      "100000000111000000000001",
+      "100000000111000000000001",
+      "100000000000000000000001",
+      "100020000000000020000001",
+      "100000111000000000000001",
+      "100000000000000000000001",
+      "100000000020000000000001",
+      "111111111111111111111111"
     ];
 
     const fpsWeapons = {
@@ -4147,7 +4169,7 @@
       shake: 0,
       pointerLockedOnce: false,
       messageTimer: 0,
-      player: { x: 2.4, y: 9.4, a: -0.2, hp: 100, armor: 50, credits: 800, round: 1 },
+      player: { x: 2.6, y: 13.4, a: -0.25, hp: 100, armor: 65, credits: 800, round: 1 },
       weaponKey: 'viper',
       ammo: { viper: { mag: 12, reserve: 36 }, marshal: { mag: 5, reserve: 20 }, breach: { mag: 4, reserve: 16 } },
       lastShot: 0,
@@ -4160,6 +4182,24 @@
     function fpsSetLog(message, duration = 1800) {
       fpsHud.log.textContent = message;
       fps.messageTimer = duration;
+    }
+
+    function fpsSetMenuState(title, body, action = 'Enter Arena') {
+      fpsMenuTitle.textContent = title;
+      fpsMenuBody.textContent = body;
+      fpsDeploy.textContent = action;
+    }
+
+    function fpsShowMenu(title, body, action = 'Enter Arena') {
+      fps.active = false;
+      fps.keys.clear();
+      fps.pointerLockedOnce = false;
+      fpsSetMenuState(title, body, action);
+      fpsMenu.classList.remove('is-hidden');
+    }
+
+    function fpsHideMenu() {
+      fpsMenu.classList.add('is-hidden');
     }
 
     function fpsCell(x, y) {
@@ -4196,10 +4236,10 @@
 
     function fpsSpawnEnemies() {
       const base = [
-        { x: 13.3, y: 2.3, hp: 80, type: 'red' },
-        { x: 12.2, y: 9.3, hp: 80, type: 'red' },
-        { x: 6.4, y: 5.2, hp: 95, type: 'rifle' },
-        { x: 3.2, y: 2.4, hp: 70, type: 'flank' }
+        { x: 20.4, y: 2.4, hp: 80, type: 'red' },
+        { x: 18.6, y: 12.6, hp: 80, type: 'red' },
+        { x: 12.4, y: 6.4, hp: 95, type: 'rifle' },
+        { x: 5.2, y: 3.3, hp: 70, type: 'flank' }
       ];
       fps.enemies = base.map((enemy, index) => {
         const safe = fpsNearestWalkable(enemy.x, enemy.y);
@@ -4217,11 +4257,11 @@
     }
 
     function fpsReset(full = true) {
-      fps.player.x = 2.4;
-      fps.player.y = 9.4;
-      fps.player.a = -0.2;
+      fps.player.x = 2.6;
+      fps.player.y = 13.4;
+      fps.player.a = -0.25;
       fps.player.hp = 100;
-      fps.player.armor = 50;
+      fps.player.armor = 65;
       if (full) {
         fps.player.round = 1;
         fps.player.credits = 800;
@@ -4292,8 +4332,7 @@
       fps.shake = Math.max(fps.shake, 10);
       fpsSetLog('Impact. Armor integrity dropping.');
       if (fps.player.hp <= 0) {
-        fps.active = false;
-        fpsMenu.classList.remove('is-hidden');
+        fpsShowMenu('You Are Down', 'Training failed. Your input has been cleared so the operator will not drift. Re-enter the arena when ready, or exit the simulation.', 'Respawn');
         fpsSetLog('Training failed. Redeploy when ready.');
       }
     }
@@ -4345,9 +4384,8 @@
       if (isSoundOn) playMetalHit(0);
       fpsUpdateHud();
       if (fps.enemies.every((enemy) => !enemy.alive)) {
-        fps.active = false;
         fps.player.round += 1;
-        fpsMenu.classList.remove('is-hidden');
+        fpsShowMenu('Arena Clear', 'Hostiles neutralized. The next round widens the pressure and refreshes your position.', 'Next Round');
         fpsSetLog('Arena clear. Next round armed.');
       }
     }
@@ -4409,18 +4447,18 @@
         const dy = fps.player.y - enemy.y;
         const dist = Math.hypot(dx, dy);
         const visible = fpsLineClear(enemy.x, enemy.y, fps.player.x, fps.player.y);
-        if (visible && dist < 9) enemy.alert = Math.min(1, enemy.alert + dt * 1.4);
-        if (enemy.alert > 0.2 && dist > 2.2) {
-          const step = dt * (enemy.type === 'flank' ? 1.1 : 0.75);
+      if (visible && dist < 9) enemy.alert = Math.min(1, enemy.alert + dt * 1.4);
+      if (enemy.alert > 0.2 && dist > 2.2) {
+          const step = dt * (enemy.type === 'flank' ? 0.72 : 0.48);
           const nx = enemy.x + dx / dist * step;
           const ny = enemy.y + dy / dist * step;
           if (dist > 0.001 && fpsCircleWalkable(nx, enemy.y, 0.16)) enemy.x = nx;
           if (dist > 0.001 && fpsCircleWalkable(enemy.x, ny, 0.16)) enemy.y = ny;
         }
-        enemy.cooldown -= dt * 1000 * (enemy.alert + 0.2);
+        enemy.cooldown -= dt * 1000 * (enemy.alert + 0.12);
         if (visible && dist < 8.5 && enemy.cooldown <= 0) {
-          enemy.cooldown = 900 + Math.random() * 850;
-          if (Math.random() < 0.72 - dist * 0.035) fpsDamagePlayer(enemy.type === 'rifle' ? 18 : 12);
+          enemy.cooldown = 1400 + Math.random() * 1100;
+          if (Math.random() < 0.56 - dist * 0.03) fpsDamagePlayer(enemy.type === 'rifle' ? 14 : 9);
           else fpsSetLog('Incoming fire missed.');
         }
       });
@@ -4439,14 +4477,14 @@
       ctx.save();
       ctx.translate(shakeX, shakeY);
       const sky = ctx.createLinearGradient(0, 0, 0, h * 0.56);
-      sky.addColorStop(0, '#0A0805');
-      sky.addColorStop(0.56, '#5A2410');
-      sky.addColorStop(1, '#C9932A');
+      sky.addColorStop(0, '#201008');
+      sky.addColorStop(0.52, '#8B3A1A');
+      sky.addColorStop(1, '#F0B75D');
       ctx.fillStyle = sky;
       ctx.fillRect(-20, -20, w + 40, h * 0.56);
       const floor = ctx.createLinearGradient(0, h * 0.46, 0, h);
-      floor.addColorStop(0, '#3D1F0A');
-      floor.addColorStop(1, '#080503');
+      floor.addColorStop(0, '#7B431B');
+      floor.addColorStop(1, '#211007');
       ctx.fillStyle = floor;
       ctx.fillRect(-20, h * 0.46, w + 40, h);
       const columns = Math.floor(w / 3);
@@ -4454,9 +4492,9 @@
         const angle = fps.player.a - fps.fov / 2 + (i / columns) * fps.fov;
         const ray = fpsCast(angle);
         const corrected = ray.distance * Math.cos(angle - fps.player.a);
-        const wallH = Math.min(h, h / Math.max(0.08, corrected));
-        const shade = clamp(1 - corrected / 13, 0.15, 1);
-        const wallColor = ray.hit === '2' ? [201, 147, 42] : [70, 35, 16];
+        const wallH = Math.min(h, h / Math.max(0.08, corrected) * 0.92);
+        const shade = clamp(1 - corrected / 16, 0.34, 1.08);
+        const wallColor = ray.hit === '2' ? [226, 166, 62] : [122, 68, 30];
         ctx.fillStyle = `rgb(${wallColor.map((v) => Math.round(v * shade)).join(',')})`;
         ctx.fillRect(i * 3, h / 2 - wallH / 2, 4, wallH);
       }
@@ -4533,7 +4571,7 @@
       document.body.classList.add('is-profile-open');
       fpsResize();
       fpsReset(true);
-      fpsMenu.classList.remove('is-hidden');
+      fpsShowMenu('3D Duel', 'WASD to move. Mouse to aim. Click to fire. R reloads. 1/2/3 swaps weapons. Shift moves faster. ESC pauses without trapping input.', 'Enter Arena');
       fps.last = performance.now();
       requestAnimationFrame(fpsLoop);
       fpsDeploy.focus();
@@ -4556,7 +4594,7 @@
       if (fps.player.hp <= 0 || fps.enemies.every((enemy) => !enemy.alive)) fpsReset(false);
       fps.active = true;
       fps.pointerLockedOnce = false;
-      fpsMenu.classList.add('is-hidden');
+      fpsHideMenu();
       fpsCanvas.requestPointerLock?.();
       fpsSetLog('Contact front. Clear the western lane.');
     }
@@ -4564,6 +4602,7 @@
     fpsLaunch?.addEventListener('click', fpsOpen);
     fpsClose?.addEventListener('click', fpsCloseWindow);
     fpsDeploy?.addEventListener('click', fpsDeployGame);
+    fpsMenuExit?.addEventListener('click', fpsCloseWindow);
     fpsCanvas?.addEventListener('click', () => {
       if (!fps.active) fpsDeployGame();
       else fpsShoot();
@@ -4577,7 +4616,7 @@
         fps.active = false;
         fps.pointerLockedOnce = false;
         fps.keys.clear();
-        fpsMenu.classList.remove('is-hidden');
+        fpsShowMenu('Paused', 'Mouse lock released and all movement keys were cleared. Re-enter when ready, or exit training.', 'Resume');
         fpsSetLog('Training paused. Click Enter Arena to resume.');
       }
     });
@@ -4587,6 +4626,9 @@
     window.addEventListener('keydown', (event) => {
       if (!fps.open) return;
       const key = event.key.toLowerCase();
+      if (fpsMenu && !fpsMenu.classList.contains('is-hidden') && ['w', 'a', 's', 'd', 'shift', 'r', ' ', '1', '2', '3'].includes(key === ' ' ? ' ' : key)) {
+        return;
+      }
       if (['w', 'a', 's', 'd', 'shift'].includes(key)) fps.keys.add(key);
       if (key === 'r') fpsReload();
       if (['1', '2', '3'].includes(key)) fpsSwap(key);
@@ -4599,6 +4641,15 @@
     window.addEventListener('keyup', (event) => {
       fps.keys.delete(event.key.toLowerCase());
     });
+    window.addEventListener('blur', () => {
+      if (!fps.open) return;
+      fps.keys.clear();
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (!fps.open || document.visibilityState === 'visible') return;
+      fps.keys.clear();
+      if (fps.active) fpsShowMenu('Paused', 'Tab focus changed. Movement was cleared to prevent drift.', 'Resume');
+    });
     window.__fpsDebug = {
       snapshot: () => ({
         open: fps.open,
@@ -4608,6 +4659,7 @@
         reloadUntil: fps.reloadUntil,
         reloadWeapon: fps.reloadWeapon,
         ammo: JSON.parse(JSON.stringify(fps.ammo)),
+        mapSize: { width: fpsMap[0].length, height: fpsMap.length },
         enemies: fps.enemies.map((enemy) => ({ ...enemy, walkable: fpsCircleWalkable(enemy.x, enemy.y, 0.16) })),
         menuHidden: fpsMenu.classList.contains('is-hidden'),
         log: fpsHud.log.textContent
