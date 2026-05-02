@@ -11,6 +11,8 @@ const checks = {
   journeyAsset: html.includes('assets/endless-road-cowboy.png') && existsSync('assets/endless-road-cowboy.png'),
   journeyMotion: html.includes('journey-bg') && html.includes('--journey-progress') && html.includes('journeyScenes'),
   cinematicUi: html.includes('cinematic-loader') && html.includes('scroll-rail') && html.includes('scene-flash') && html.includes('spotlight-layer'),
+  duelGame: html.includes('id="duelCanvas"') && html.includes('duelWeapons') && html.includes('assets/duel-arena.png') && existsSync('assets/duel-arena.png'),
+  duelSystems: html.includes('playerHpMeter') && html.includes('enemyHpMeter') && html.includes('shootPlayer') && html.includes('reloadPlayer'),
   noHeroSymbols: /\.hero-silhouettes[\s\S]*?display:\s*none/.test(html),
   operators: (html.match(/data-profile-id=/g) || []).length === 7,
   noDeploy: !html.includes('>Deploy</button>'),

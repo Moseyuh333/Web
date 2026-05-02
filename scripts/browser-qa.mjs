@@ -168,6 +168,7 @@ try {
     journeyBg: !!document.querySelector('.journey-bg img[src*="endless-road-cowboy.png"]'),
     journeyMotion: getComputedStyle(document.documentElement).getPropertyValue('--journey-progress').trim() !== '',
     cinematicUi: !!document.querySelector('.cinematic-loader') && !!document.querySelector('.scroll-rail') && !!document.querySelector('.scene-flash'),
+    duelGame: !!document.querySelector('#duelCanvas') && !!document.querySelector('#duelStart') && document.querySelectorAll('.weapon-btn').length === 3,
     viewTransitionRef: document.documentElement.innerHTML.includes('startViewTransition'),
     operators: document.querySelectorAll('[data-profile-id]').length,
     overflow: document.body.scrollWidth > window.innerWidth + 2,
@@ -179,6 +180,21 @@ try {
       return points.some(([x, y]) => context.getImageData(x, y, 1, 1).data[3] > 0);
     })()
   }))()`);
+
+  await evaluate(client, `document.querySelector('#duel')?.scrollIntoView();`);
+  await delay(400);
+  await evaluate(client, `document.querySelector('[data-weapon="rifle"]').click();`);
+  await evaluate(client, `document.querySelector('#duelStart').click();`);
+  await delay(3200);
+  await evaluate(client, `document.querySelector('#duelCanvas').click();`);
+  await delay(500);
+  const duelInteraction = await evaluate(client, `(() => {
+    const readout = document.querySelector('#duelReadout')?.textContent || '';
+    const player = document.querySelector('#playerHpText')?.textContent || '';
+    return document.querySelector('[data-weapon="rifle"]').classList.contains('is-active') &&
+      /ROUNDS|SHELLS|HP/.test(player) &&
+      readout.length > 8;
+  })()`);
 
   await evaluate(client, `document.querySelector('#soundStart').click();`);
   await delay(300);
@@ -214,7 +230,7 @@ try {
 
   client.close();
 
-  const results = { base, sound, profile, next, esc, mobile, errors };
+  const results = { base, duelInteraction, sound, profile, next, esc, mobile, errors };
   console.log(JSON.stringify(results, null, 2));
 
   const failed = [
@@ -223,6 +239,8 @@ try {
     base.journeyBg,
     base.journeyMotion,
     base.cinematicUi,
+    base.duelGame,
+    duelInteraction,
     base.viewTransitionRef,
     base.operators === 7,
     !base.overflow,

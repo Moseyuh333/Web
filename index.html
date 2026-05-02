@@ -1607,6 +1607,220 @@
       transform: translateY(-3px);
     }
 
+    /* === WEB-BASED DUEL GAME === */
+    .duel-game {
+      padding: 120px 0;
+      background:
+        radial-gradient(circle at 52% 18%, rgba(201, 147, 42, 0.14), transparent 24rem),
+        linear-gradient(180deg, rgba(10, 8, 5, 0.5), rgba(28, 15, 5, 0.72));
+      overflow: hidden;
+      backdrop-filter: blur(2px);
+    }
+
+    .duel-header {
+      display: grid;
+      grid-template-columns: 1fr minmax(280px, 470px);
+      gap: 36px;
+      align-items: end;
+      margin-bottom: 34px;
+    }
+
+    .duel-stage {
+      position: relative;
+      border: 1px solid rgba(201, 147, 42, 0.34);
+      background: #070504;
+      box-shadow: 0 34px 110px rgba(0, 0, 0, 0.5), inset 0 0 80px rgba(0, 0, 0, 0.48);
+      overflow: hidden;
+    }
+
+    .duel-stage::before,
+    .duel-stage::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .duel-stage::before {
+      background:
+        radial-gradient(circle at var(--pointer-x) var(--pointer-y), rgba(201, 147, 42, 0.11), transparent 18rem),
+        linear-gradient(90deg, rgba(10, 8, 5, 0.5), transparent 32%, transparent 68%, rgba(10, 8, 5, 0.5));
+      mix-blend-mode: screen;
+    }
+
+    .duel-stage::after {
+      background:
+        linear-gradient(rgba(245, 240, 232, 0.045) 1px, transparent 1px),
+        radial-gradient(ellipse at center, transparent 48%, rgba(0, 0, 0, 0.45));
+      background-size: 100% 4px, auto;
+      opacity: 0.6;
+    }
+
+    #duelCanvas {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      display: block;
+      background: #090604;
+    }
+
+    .duel-hud {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      padding: clamp(14px, 2.2vw, 28px);
+      pointer-events: none;
+    }
+
+    .duel-bars {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: clamp(12px, 2vw, 24px);
+      align-items: start;
+    }
+
+    .duel-card {
+      min-width: 0;
+      padding: 12px;
+      border: 1px solid rgba(232, 213, 176, 0.18);
+      background: rgba(10, 8, 5, 0.58);
+      backdrop-filter: blur(10px);
+    }
+
+    .duel-card--enemy {
+      text-align: right;
+    }
+
+    .duel-name {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+      color: rgba(245, 240, 232, 0.86);
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .duel-card--enemy .duel-name {
+      flex-direction: row-reverse;
+    }
+
+    .duel-meter {
+      height: 9px;
+      margin-top: 6px;
+      border: 1px solid rgba(245, 240, 232, 0.16);
+      background: rgba(255, 255, 255, 0.05);
+      overflow: hidden;
+    }
+
+    .duel-meter span {
+      display: block;
+      width: calc(var(--meter, 1) * 100%);
+      height: 100%;
+      background: linear-gradient(90deg, var(--color-blood), var(--color-gold));
+      box-shadow: 0 0 18px rgba(201, 147, 42, 0.4);
+      transition: width 260ms var(--ease-out);
+    }
+
+    .duel-meter--stamina span {
+      background: linear-gradient(90deg, #567E88, #E8D5B0);
+    }
+
+    .duel-round {
+      min-width: 150px;
+      padding: 14px 16px;
+      color: var(--color-gold);
+      border: 1px solid rgba(201, 147, 42, 0.34);
+      background: rgba(10, 8, 5, 0.7);
+      font-family: var(--font-serif);
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      font-weight: 700;
+      line-height: 0.9;
+      text-align: center;
+      text-transform: uppercase;
+      backdrop-filter: blur(12px);
+    }
+
+    .duel-readout {
+      align-self: center;
+      justify-self: center;
+      max-width: min(620px, 90%);
+      padding: 16px 20px;
+      color: rgba(245, 240, 232, 0.9);
+      border: 1px solid rgba(201, 147, 42, 0.28);
+      background: rgba(10, 8, 5, 0.64);
+      font-size: clamp(0.72rem, 1.5vw, 0.88rem);
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-align: center;
+      text-transform: uppercase;
+      transform: translateY(0);
+      backdrop-filter: blur(12px);
+    }
+
+    .duel-controls {
+      align-self: end;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px;
+      align-items: end;
+      pointer-events: auto;
+    }
+
+    .weapon-strip,
+    .duel-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .weapon-btn,
+    .duel-btn {
+      min-height: 44px;
+      padding: 10px 12px;
+      color: rgba(245, 240, 232, 0.84);
+      border: 1px solid rgba(201, 147, 42, 0.28);
+      background: rgba(10, 8, 5, 0.62);
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      backdrop-filter: blur(10px);
+      transition: transform 220ms var(--ease-out), border-color 220ms ease, background 220ms ease, color 220ms ease;
+    }
+
+    .weapon-btn:hover,
+    .weapon-btn.is-active,
+    .duel-btn:hover {
+      color: var(--color-gold);
+      border-color: rgba(201, 147, 42, 0.82);
+      background: rgba(201, 147, 42, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .weapon-btn small {
+      display: block;
+      margin-top: 3px;
+      color: rgba(232, 213, 176, 0.54);
+      font-size: 0.55rem;
+      letter-spacing: 0.08em;
+    }
+
+    .duel-help {
+      margin-top: 14px;
+      color: rgba(245, 240, 232, 0.58);
+      font-size: 0.66rem;
+      line-height: 1.7;
+      text-transform: uppercase;
+    }
+
     .toast {
       position: fixed;
       left: 50%;
@@ -2153,6 +2367,35 @@
       }
       .hero p { letter-spacing: 0.18em; }
       .team, .capabilities, .contact { padding: 78px 0; }
+      .duel-game { padding: 78px 0; }
+      .duel-header {
+        grid-template-columns: 1fr;
+      }
+      .duel-bars {
+        grid-template-columns: 1fr;
+      }
+      .duel-card--enemy {
+        text-align: left;
+      }
+      .duel-card--enemy .duel-name {
+        flex-direction: row;
+      }
+      .duel-round {
+        order: -1;
+        min-width: 0;
+      }
+      .duel-controls {
+        grid-template-columns: 1fr;
+      }
+      .weapon-strip,
+      .duel-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+      #duelCanvas {
+        min-height: 520px;
+        aspect-ratio: auto;
+      }
       .team-grid { grid-template-columns: 1fr; }
       .poster { min-height: 468px; }
       .capability-card {
@@ -2342,6 +2585,7 @@
     <a class="rail-link" href="#index" data-rail-target="index">Index</a>
     <a class="rail-link" href="#team" data-rail-target="team">Unit</a>
     <a class="rail-link" href="#capabilities" data-rail-target="capabilities">Operations</a>
+    <a class="rail-link" href="#duel" data-rail-target="duel">Duel</a>
     <a class="rail-link" href="#contact" data-rail-target="contact">Contact</a>
   </nav>
 
@@ -2353,6 +2597,7 @@
         <a href="#index">Index</a>
         <a href="#team">Unit</a>
         <a href="#capabilities">Operations</a>
+        <a href="#duel">Duel</a>
         <a href="#contact">Contact</a>
       </div>
       <a class="nav-dossier" href="#team">Open Dossier</a>
@@ -2416,7 +2661,8 @@
         <a class="index-row" href="#team"><span class="index-no">01</span><span class="index-title">The Unit</span><span class="index-meta">Seven operators, one hostile frontier.</span></a>
         <a class="index-row" href="#team"><span class="index-no">02</span><span class="index-title">Operators</span><span class="index-meta">Profiles, weapons, instincts, signatures.</span></a>
         <a class="index-row" href="#capabilities"><span class="index-no">03</span><span class="index-title">Operations</span><span class="index-meta">Red, blue, intel, forensics, malware.</span></a>
-        <a class="index-row" href="#contact"><span class="index-no">04</span><span class="index-title">Contact</span><span class="index-meta">Bring the unit in before the dust settles.</span></a>
+        <a class="index-row" href="#duel"><span class="index-no">04</span><span class="index-title">Duel Simulator</span><span class="index-meta">Playable high noon breach protocol.</span></a>
+        <a class="index-row" href="#contact"><span class="index-no">05</span><span class="index-title">Contact</span><span class="index-meta">Bring the unit in before the dust settles.</span></a>
       </div>
     </div>
   </section>
@@ -2471,6 +2717,55 @@
         <div class="stat reveal"><span class="stat-number" data-target="120" data-suffix="+">0</span><span class="stat-label">Engagements Delivered</span></div>
         <div class="stat reveal"><span class="stat-number" data-target="0" data-suffix="">0</span><span class="stat-label">Breaches on Watch</span></div>
         <div class="stat reveal"><span class="stat-number" data-target="7" data-suffix="">0</span><span class="stat-label">Legends, 1 Team</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- === WEB-BASED DUEL GAME === -->
+  <section class="duel-game" id="duel">
+    <div class="section-inner">
+      <div class="duel-header reveal">
+        <div>
+          <p class="section-kicker">Playable Dossier / Web Duel</p>
+          <h2 class="section-title">High Noon Breach Protocol</h2>
+        </div>
+        <p class="section-copy">A cinematic browser duel built into the portfolio: manage health, stamina, ammo, reload timing, weapon choice, aim discipline, and the enemy operator's aggression.</p>
+      </div>
+
+      <div class="duel-stage reveal" id="duelStage">
+        <canvas id="duelCanvas" width="1600" height="900" aria-label="Playable cowboy duel game"></canvas>
+        <div class="duel-hud" aria-live="polite">
+          <div class="duel-bars">
+            <div class="duel-card">
+              <div class="duel-name"><span>THE IRON SHERIFF</span><span id="playerHpText">100 HP</span></div>
+              <div class="duel-meter" id="playerHpMeter"><span></span></div>
+              <div class="duel-meter duel-meter--stamina" id="playerStaminaMeter"><span></span></div>
+            </div>
+            <div class="duel-round" id="duelRound">Round 1</div>
+            <div class="duel-card duel-card--enemy">
+              <div class="duel-name"><span>THE RED HAND</span><span id="enemyHpText">100 HP</span></div>
+              <div class="duel-meter" id="enemyHpMeter"><span></span></div>
+            </div>
+          </div>
+
+          <div class="duel-readout" id="duelReadout">Draw when the signal hits. Aim center mass. Survive the frontier.</div>
+
+          <div class="duel-controls">
+            <div>
+              <div class="weapon-strip" role="group" aria-label="Weapon selection">
+                <button class="weapon-btn is-active" type="button" data-weapon="revolver">Revolver<small>Balanced / 6 rounds</small></button>
+                <button class="weapon-btn" type="button" data-weapon="rifle">Rifle<small>Precise / 4 rounds</small></button>
+                <button class="weapon-btn" type="button" data-weapon="shotgun">Shotgun<small>Brutal / 2 shells</small></button>
+              </div>
+              <div class="duel-help">Move: A/D or arrows. Shoot: Space or click canvas. Reload: R. Swap: 1/2/3.</div>
+            </div>
+            <div class="duel-actions">
+              <button class="duel-btn" type="button" id="duelStart">Start Duel</button>
+              <button class="duel-btn" type="button" id="duelReload">Reload</button>
+              <button class="duel-btn" type="button" id="duelReset">Reset</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -3126,8 +3421,9 @@
       { at: 0.16, no: 'Scene 01', title: 'Field Manual', target: 'index' },
       { at: 0.34, no: 'Scene 02', title: 'The Unit Rides', target: 'team' },
       { at: 0.56, no: 'Scene 03', title: 'Operations In Dust', target: 'capabilities' },
-      { at: 0.76, no: 'Scene 04', title: 'Body Count', target: 'capabilities' },
-      { at: 0.92, no: 'Scene 05', title: 'Call The Cavalry', target: 'contact' }
+      { at: 0.72, no: 'Scene 04', title: 'Body Count', target: 'capabilities' },
+      { at: 0.84, no: 'Scene 05', title: 'High Noon Protocol', target: 'duel' },
+      { at: 0.94, no: 'Scene 06', title: 'Call The Cavalry', target: 'contact' }
     ];
     let activeJourneyScene = -1;
     let sceneCutTimer = 0;
@@ -3410,6 +3706,439 @@
     soundStart?.addEventListener('click', async () => {
       await setSoundState(!isSoundOn);
     });
+
+    /* === PLAYABLE DUEL GAME === */
+    const duelCanvas = document.getElementById('duelCanvas');
+    const duelStage = document.getElementById('duelStage');
+    const duelReadout = document.getElementById('duelReadout');
+    const duelRound = document.getElementById('duelRound');
+    const duelStart = document.getElementById('duelStart');
+    const duelReload = document.getElementById('duelReload');
+    const duelReset = document.getElementById('duelReset');
+    const playerHpText = document.getElementById('playerHpText');
+    const enemyHpText = document.getElementById('enemyHpText');
+    const playerHpMeter = document.getElementById('playerHpMeter');
+    const playerStaminaMeter = document.getElementById('playerStaminaMeter');
+    const enemyHpMeter = document.getElementById('enemyHpMeter');
+    const weaponButtons = [...document.querySelectorAll('.weapon-btn')];
+
+    const duelWeapons = {
+      revolver: { name: 'Revolver', damage: 18, spread: 0.17, cooldown: 420, ammoMax: 6, reload: 920, stamina: 9, speed: 1.1 },
+      rifle: { name: 'Rifle', damage: 30, spread: 0.08, cooldown: 760, ammoMax: 4, reload: 1250, stamina: 16, speed: 0.88 },
+      shotgun: { name: 'Shotgun', damage: 42, spread: 0.31, cooldown: 940, ammoMax: 2, reload: 1450, stamina: 22, speed: 0.72 }
+    };
+
+    const duel = {
+      ctx: duelCanvas?.getContext('2d'),
+      width: 1600,
+      height: 900,
+      running: false,
+      visible: false,
+      round: 1,
+      phase: 'idle',
+      messageTimer: 0,
+      countdown: 0,
+      last: performance.now(),
+      shake: 0,
+      looping: false,
+      player: { x: 260, y: 692, hp: 100, stamina: 100, weapon: 'revolver', ammo: 6, reloadUntil: 0, lastShot: 0, drawBonus: 0 },
+      enemy: { x: 1340, y: 692, hp: 100, aim: 0.52, aggression: 1, nextShot: 0, lastShot: 0, reloadUntil: 0, ammo: 6 },
+      bullets: [],
+      particles: [],
+      inputs: { left: false, right: false },
+      arena: new Image()
+    };
+
+    if (duel.arena) duel.arena.src = 'assets/duel-arena.png';
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function setDuelMessage(message, duration = 1700) {
+      duelReadout.textContent = message;
+      duel.messageTimer = duration;
+    }
+
+    function updateDuelHud() {
+      const playerWeapon = duelWeapons[duel.player.weapon];
+      playerHpText.textContent = `${Math.max(0, Math.round(duel.player.hp))} HP / ${duel.player.ammo} ${duel.player.weapon === 'shotgun' ? 'SHELLS' : 'ROUNDS'}`;
+      enemyHpText.textContent = `${Math.max(0, Math.round(duel.enemy.hp))} HP`;
+      playerHpMeter.style.setProperty('--meter', clamp(duel.player.hp / 100, 0, 1));
+      playerStaminaMeter.style.setProperty('--meter', clamp(duel.player.stamina / 100, 0, 1));
+      enemyHpMeter.style.setProperty('--meter', clamp(duel.enemy.hp / 100, 0, 1));
+      duelRound.textContent = duel.phase === 'draw' ? Math.ceil(duel.countdown / 1000) : `Round ${duel.round}`;
+      weaponButtons.forEach((button) => {
+        const weapon = duelWeapons[button.dataset.weapon];
+        button.classList.toggle('is-active', button.dataset.weapon === duel.player.weapon);
+        button.querySelector('small').textContent = `${weapon.damage} DMG / ${button.dataset.weapon === duel.player.weapon ? duel.player.ammo : weapon.ammoMax} ammo`;
+      });
+      if (duel.player.reloadUntil > performance.now()) {
+        duelReadout.textContent = `Reloading ${playerWeapon.name}. Keep moving.`;
+      }
+    }
+
+    function resetDuel(full = true) {
+      duel.running = false;
+      duel.phase = 'idle';
+      duel.countdown = 0;
+      duel.shake = 0;
+      duel.bullets = [];
+      duel.particles = [];
+      duel.player.hp = 100;
+      duel.player.stamina = 100;
+      duel.player.x = 260;
+      duel.player.y = 692;
+      duel.player.ammo = duelWeapons[duel.player.weapon].ammoMax;
+      duel.player.reloadUntil = 0;
+      duel.player.lastShot = 0;
+      duel.enemy.hp = 100;
+      duel.enemy.x = 1340;
+      duel.enemy.y = 692;
+      duel.enemy.aim = 0.52 + Math.min(0.2, duel.round * 0.025);
+      duel.enemy.aggression = 1 + duel.round * 0.08;
+      duel.enemy.ammo = 6;
+      duel.enemy.reloadUntil = 0;
+      duel.enemy.nextShot = performance.now() + 1500;
+      if (full) duel.round = 1;
+      setDuelMessage('Press Start Duel. Choose your weapon before the signal.');
+      updateDuelHud();
+    }
+
+    function startDuel() {
+      if (!duelCanvas) return;
+      resetDuel(false);
+      duel.running = true;
+      duel.phase = 'draw';
+      duel.countdown = 2800;
+      duel.last = performance.now();
+      setDuelMessage('Stand by. Wait for the signal.', 2800);
+      if (!duel.looping) {
+        duel.looping = true;
+        requestAnimationFrame(loopDuel);
+      }
+    }
+
+    function selectWeapon(name) {
+      if (!duelWeapons[name]) return;
+      duel.player.weapon = name;
+      duel.player.ammo = duelWeapons[name].ammoMax;
+      setDuelMessage(`${duelWeapons[name].name} armed.`);
+      updateDuelHud();
+    }
+
+    function reloadPlayer() {
+      const weapon = duelWeapons[duel.player.weapon];
+      const now = performance.now();
+      if (duel.player.reloadUntil > now || duel.player.ammo === weapon.ammoMax) return;
+      duel.player.reloadUntil = now + weapon.reload;
+      setDuelMessage(`Reloading ${weapon.name}.`);
+    }
+
+    function spawnDust(x, y, color = '#C9932A', count = 12, force = 1) {
+      for (let i = 0; i < count; i += 1) {
+        duel.particles.push({
+          x, y,
+          vx: (Math.random() - 0.5) * 7 * force,
+          vy: (Math.random() - 0.9) * 5 * force,
+          r: Math.random() * 3 + 1,
+          life: 480 + Math.random() * 520,
+          max: 900,
+          color
+        });
+      }
+    }
+
+    function fireBullet(from, to, weaponName, owner) {
+      const weapon = duelWeapons[weaponName];
+      duel.bullets.push({
+        x: from.x,
+        y: from.y - 120,
+        tx: to.x,
+        ty: to.y - 120 + (Math.random() - 0.5) * weapon.spread * 420,
+        owner,
+        speed: 1800,
+        damage: weapon.damage,
+        life: 0,
+        max: 420,
+        color: owner === 'player' ? '#F5D083' : '#D45D43'
+      });
+      duel.shake = Math.max(duel.shake, weaponName === 'shotgun' ? 14 : 8);
+      spawnDust(from.x, from.y - 88, owner === 'player' ? '#F5D083' : '#D45D43', weaponName === 'shotgun' ? 28 : 16, weaponName === 'shotgun' ? 1.7 : 1);
+      if (isSoundOn) playMetalHit(0);
+    }
+
+    function shootPlayer() {
+      if (duel.phase !== 'live') return;
+      const weapon = duelWeapons[duel.player.weapon];
+      const now = performance.now();
+      if (duel.player.reloadUntil > now) return;
+      if (now - duel.player.lastShot < weapon.cooldown) return;
+      if (duel.player.stamina < weapon.stamina) {
+        setDuelMessage('Stamina too low. Reposition.');
+        return;
+      }
+      if (duel.player.ammo <= 0) {
+        setDuelMessage('Empty chamber. Reload.');
+        return;
+      }
+      duel.player.lastShot = now;
+      duel.player.ammo -= 1;
+      duel.player.stamina = clamp(duel.player.stamina - weapon.stamina, 0, 100);
+      fireBullet(duel.player, duel.enemy, duel.player.weapon, 'player');
+      setDuelMessage(`${weapon.name} fired. ${duel.player.ammo} remaining.`);
+    }
+
+    function enemyShoot(now) {
+      if (duel.enemy.reloadUntil > now) return;
+      if (duel.enemy.ammo <= 0) {
+        duel.enemy.reloadUntil = now + 1050;
+        duel.enemy.ammo = 6;
+        return;
+      }
+      duel.enemy.ammo -= 1;
+      duel.enemy.lastShot = now;
+      duel.enemy.nextShot = now + (940 + Math.random() * 900) / duel.enemy.aggression;
+      fireBullet(duel.enemy, duel.player, 'revolver', 'enemy');
+    }
+
+    function resolveHit(bullet) {
+      const target = bullet.owner === 'player' ? duel.enemy : duel.player;
+      const distance = Math.abs(bullet.ty - (target.y - 120));
+      const hitChance = bullet.owner === 'player'
+        ? clamp(1 - distance / 230 + duel.player.drawBonus, 0.18, 0.96)
+        : clamp(duel.enemy.aim - Math.abs(duel.player.x - 260) / 900, 0.16, 0.82);
+      if (Math.random() < hitChance) {
+        target.hp = clamp(target.hp - bullet.damage, 0, 100);
+        spawnDust(target.x, target.y - 112, '#8B3A2A', 24, 1.5);
+        setDuelMessage(bullet.owner === 'player' ? 'Hit confirmed. Press the advantage.' : 'You were hit. Keep your nerve.');
+      } else {
+        spawnDust(target.x + (Math.random() - 0.5) * 120, target.y - 90, '#C9932A', 18, 1.2);
+        setDuelMessage(bullet.owner === 'player' ? 'Missed. Correct your aim.' : 'Enemy shot wide.');
+      }
+    }
+
+    function finishRound(winner) {
+      duel.phase = 'ended';
+      duel.running = false;
+      if (winner === 'player') {
+        duel.round += 1;
+        setDuelMessage('Enemy down. Start next round when ready.');
+      } else {
+        setDuelMessage('You fell in the dust. Reset and draw again.');
+      }
+      updateDuelHud();
+    }
+
+    function updateDuel(dt, now) {
+      if (duel.phase === 'draw') {
+        duel.countdown -= dt;
+        if (duel.countdown <= 0) {
+          duel.phase = 'live';
+          duel.enemy.nextShot = now + 900 / duel.enemy.aggression;
+          setDuelMessage('DRAW. Fire when ready.');
+        }
+      }
+
+      if (duel.phase === 'live') {
+        const weapon = duelWeapons[duel.player.weapon];
+        const dir = (duel.inputs.right ? 1 : 0) - (duel.inputs.left ? 1 : 0);
+        duel.player.x = clamp(duel.player.x + dir * 0.42 * dt * weapon.speed, 160, 520);
+        duel.player.stamina = clamp(duel.player.stamina + dt * 0.022, 0, 100);
+        duel.player.drawBonus = clamp((duel.player.stamina - 50) / 180, -0.12, 0.18);
+        if (duel.player.reloadUntil && duel.player.reloadUntil <= now) {
+          duel.player.ammo = weapon.ammoMax;
+          duel.player.reloadUntil = 0;
+          setDuelMessage(`${weapon.name} loaded.`);
+        }
+        if (duel.enemy.nextShot <= now) enemyShoot(now);
+      }
+
+      duel.bullets = duel.bullets.filter((bullet) => {
+        bullet.life += dt;
+        const t = clamp(bullet.life / bullet.max, 0, 1);
+        bullet.x += (bullet.tx - bullet.x) * 0.22;
+        bullet.y += (bullet.ty - bullet.y) * 0.22;
+        if (t >= 1) {
+          resolveHit(bullet);
+          return false;
+        }
+        return true;
+      });
+
+      duel.particles = duel.particles.filter((particle) => {
+        particle.life -= dt;
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+        particle.vy += 0.08;
+        particle.vx *= 0.98;
+        return particle.life > 0;
+      });
+
+      duel.shake *= 0.88;
+      if (duel.player.hp <= 0) finishRound('enemy');
+      if (duel.enemy.hp <= 0) finishRound('player');
+      updateDuelHud();
+    }
+
+    function drawCowboy(ctx, fighter, side, isEnemy = false) {
+      const x = fighter.x;
+      const y = fighter.y;
+      const flip = side === 'right' ? -1 : 1;
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(flip, 1);
+      ctx.fillStyle = 'rgba(0,0,0,0.34)';
+      ctx.beginPath();
+      ctx.ellipse(0, 18, 92, 20, 0, 0, Math.PI * 2);
+      ctx.fill();
+      const coat = ctx.createLinearGradient(-34, -180, 28, 10);
+      coat.addColorStop(0, isEnemy ? '#32100a' : '#0c0a08');
+      coat.addColorStop(0.55, isEnemy ? '#120705' : '#1a130d');
+      coat.addColorStop(1, '#050403');
+      ctx.fillStyle = coat;
+      ctx.beginPath();
+      ctx.moveTo(-34, -128);
+      ctx.lineTo(32, -128);
+      ctx.lineTo(58, 10);
+      ctx.lineTo(18, 18);
+      ctx.lineTo(0, -42);
+      ctx.lineTo(-22, 18);
+      ctx.lineTo(-62, 10);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = '#050403';
+      ctx.fillRect(-20, -102, 40, 78);
+      ctx.fillRect(-46, -16, 24, 90);
+      ctx.fillRect(20, -16, 24, 90);
+      ctx.fillRect(30, -98, 88, 10);
+      ctx.fillRect(96, -105, 30, 5);
+      ctx.fillStyle = isEnemy ? '#7d2f24' : '#c9932a';
+      ctx.fillRect(34, -100, 24, 4);
+      ctx.fillStyle = '#050403';
+      ctx.beginPath();
+      ctx.arc(0, -162, 28, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.ellipse(0, -168, 72, 10, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillRect(-32, -205, 64, 34);
+      ctx.fillStyle = isEnemy ? 'rgba(212,93,67,0.34)' : 'rgba(201,147,42,0.34)';
+      ctx.fillRect(-28, -174, 56, 4);
+      ctx.restore();
+    }
+
+    function drawDuel() {
+      if (!duel.ctx) return;
+      const ctx = duel.ctx;
+      ctx.save();
+      ctx.clearRect(0, 0, duel.width, duel.height);
+      const shakeX = (Math.random() - 0.5) * duel.shake;
+      const shakeY = (Math.random() - 0.5) * duel.shake;
+      ctx.translate(shakeX, shakeY);
+      if (duel.arena.complete && duel.arena.naturalWidth) {
+        ctx.drawImage(duel.arena, 0, 0, duel.width, duel.height);
+      } else {
+        const bg = ctx.createLinearGradient(0, 0, 0, duel.height);
+        bg.addColorStop(0, '#120906');
+        bg.addColorStop(0.58, '#7a3a18');
+        bg.addColorStop(1, '#140905');
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, duel.width, duel.height);
+      }
+      ctx.fillStyle = 'rgba(10, 8, 5, 0.22)';
+      ctx.fillRect(0, 0, duel.width, duel.height);
+      ctx.strokeStyle = 'rgba(201, 147, 42, 0.38)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(duel.width / 2, 300);
+      ctx.lineTo(duel.width / 2, 870);
+      ctx.stroke();
+      drawCowboy(ctx, duel.player, 'left');
+      drawCowboy(ctx, duel.enemy, 'right', true);
+      duel.bullets.forEach((bullet) => {
+        ctx.strokeStyle = bullet.color;
+        ctx.lineWidth = 4;
+        ctx.shadowColor = bullet.color;
+        ctx.shadowBlur = 18;
+        ctx.beginPath();
+        ctx.moveTo(bullet.x, bullet.y);
+        ctx.lineTo(bullet.x + (bullet.owner === 'player' ? 52 : -52), bullet.y - 5);
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+      });
+      duel.particles.forEach((particle) => {
+        ctx.globalAlpha = clamp(particle.life / particle.max, 0, 1);
+        ctx.fillStyle = particle.color;
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, particle.r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.globalAlpha = 1;
+      ctx.restore();
+    }
+
+    function resizeDuelCanvas() {
+      if (!duelCanvas || !duel.ctx) return;
+      const rect = duelCanvas.getBoundingClientRect();
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      duel.width = Math.max(900, Math.floor(rect.width * ratio));
+      duel.height = Math.max(520, Math.floor(rect.height * ratio));
+      duelCanvas.width = duel.width;
+      duelCanvas.height = duel.height;
+      duel.player.y = duel.height * 0.77;
+      duel.enemy.y = duel.height * 0.77;
+      duel.enemy.x = duel.width - 260;
+      drawDuel();
+    }
+
+    function loopDuel(now) {
+      const dt = Math.min(48, now - duel.last);
+      duel.last = now;
+      updateDuel(dt, now);
+      drawDuel();
+      if (duel.running || duel.visible) {
+        requestAnimationFrame(loopDuel);
+      } else {
+        duel.looping = false;
+      }
+    }
+
+    if (duelCanvas && duel.ctx) {
+      resizeDuelCanvas();
+      resetDuel();
+      window.addEventListener('resize', resizeDuelCanvas, { passive: true });
+      duelStart.addEventListener('click', startDuel);
+      duelReload.addEventListener('click', reloadPlayer);
+      duelReset.addEventListener('click', () => resetDuel(true));
+      duelCanvas.addEventListener('click', shootPlayer);
+      weaponButtons.forEach((button) => button.addEventListener('click', () => selectWeapon(button.dataset.weapon)));
+      window.addEventListener('keydown', (event) => {
+        if (event.key === 'a' || event.key === 'ArrowLeft') duel.inputs.left = true;
+        if (event.key === 'd' || event.key === 'ArrowRight') duel.inputs.right = true;
+        if (event.key === ' ' && document.activeElement?.tagName !== 'BUTTON') {
+          event.preventDefault();
+          shootPlayer();
+        }
+        if (event.key.toLowerCase() === 'r') reloadPlayer();
+        if (event.key === '1') selectWeapon('revolver');
+        if (event.key === '2') selectWeapon('rifle');
+        if (event.key === '3') selectWeapon('shotgun');
+      });
+      window.addEventListener('keyup', (event) => {
+        if (event.key === 'a' || event.key === 'ArrowLeft') duel.inputs.left = false;
+        if (event.key === 'd' || event.key === 'ArrowRight') duel.inputs.right = false;
+      });
+      const duelObserver = new IntersectionObserver((entries) => {
+        duel.visible = entries.some((entry) => entry.isIntersecting);
+        if (duel.visible && !duel.looping) {
+          duel.last = performance.now();
+          duel.looping = true;
+          requestAnimationFrame(loopDuel);
+        }
+      }, { threshold: 0.1 });
+      duelObserver.observe(duelStage);
+    }
 
     window.__magnificentSevenReady = true;
   </script>
