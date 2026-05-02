@@ -187,18 +187,38 @@ try {
   await evaluate(client, `document.querySelector('#fpsLaunch').click();`);
   await delay(300);
   await evaluate(client, `document.querySelector('#fpsDeploy').click();`);
+  await delay(150);
+  const fpsBeforeMove = await evaluate(client, `window.__fpsDebug.snapshot().player`);
   await client.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'w', code: 'KeyW', windowsVirtualKeyCode: 87 });
-  await delay(250);
+  await delay(650);
   await client.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'w', code: 'KeyW', windowsVirtualKeyCode: 87 });
+  await client.send('Input.dispatchKeyEvent', { type: 'keyDown', key: '2', code: 'Digit2', windowsVirtualKeyCode: 50 });
+  await client.send('Input.dispatchKeyEvent', { type: 'keyUp', key: '2', code: 'Digit2', windowsVirtualKeyCode: 50 });
+  const fpsAfterMove = await evaluate(client, `window.__fpsDebug.snapshot().player`);
   await evaluate(client, `document.querySelector('#fpsCanvas').click();`);
-  await delay(500);
+  await delay(220);
+  const fpsAfterShot = await evaluate(client, `window.__fpsDebug.snapshot()`);
+  await client.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'r', code: 'KeyR', windowsVirtualKeyCode: 82 });
+  await client.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'r', code: 'KeyR', windowsVirtualKeyCode: 82 });
+  await delay(1800);
   const duelInteraction = await evaluate(client, `(() => {
     const win = document.querySelector('#fpsWindow');
     const ammo = document.querySelector('#fpsAmmo')?.textContent || '';
     const log = document.querySelector('#fpsLog')?.textContent || '';
+    const state = window.__fpsDebug.snapshot();
+    const moved = Math.hypot(state.player.x - ${fpsBeforeMove.x}, state.player.y - ${fpsBeforeMove.y}) > 0.1;
+    const safePlayer = window.__fpsDebug.functions.walkable(state.player.x, state.player.y);
+    const safeEnemies = state.enemies.every((enemy) => enemy.walkable);
     return win.classList.contains('is-open') &&
       document.querySelector('#fpsMenu').classList.contains('is-hidden') &&
       /\\d+ \\/ \\d+/.test(ammo) &&
+      state.weaponKey === 'marshal' &&
+      ${fpsAfterShot.ammo.marshal.mag} < 5 &&
+      state.ammo.marshal.mag === 5 &&
+      state.ammo.marshal.reserve === 19 &&
+      moved &&
+      safePlayer &&
+      safeEnemies &&
       log.length > 8;
   })()`);
   await evaluate(client, `document.querySelector('#fpsClose').click();`);

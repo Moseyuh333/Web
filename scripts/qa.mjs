@@ -15,6 +15,7 @@ const checks = {
   duelSystems: html.includes('playerHpMeter') && html.includes('enemyHpMeter') && html.includes('shootPlayer') && html.includes('reloadPlayer'),
   fpsGame: html.includes('id="fpsWindow"') && html.includes('id="fpsCanvas"') && html.includes('fpsWeapons') && html.includes('fpsDeployGame'),
   fpsControls: html.includes('requestPointerLock') && html.includes("fps.keys.add") && html.includes('fpsShoot') && html.includes('fpsReload'),
+  fpsDebugQa: html.includes('window.__fpsDebug') && html.includes('fpsCircleWalkable') && html.includes('pointerlockchange'),
   noHeroSymbols: /\.hero-silhouettes[\s\S]*?display:\s*none/.test(html),
   operators: (html.match(/data-profile-id=/g) || []).length === 7,
   noDeploy: !html.includes('>Deploy</button>'),

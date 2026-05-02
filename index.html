@@ -4133,6 +4133,7 @@
       marshal: { name: 'Marshal Rifle', damage: 48, mag: 5, reserve: 20, fireRate: 540, reload: 1550, spread: 0.006, range: 13 },
       breach: { name: 'Breach-12', damage: 18, pellets: 6, mag: 4, reserve: 16, fireRate: 780, reload: 1750, spread: 0.085, range: 5.8 }
     };
+    const fpsPlayerRadius = 0.22;
 
     const fps = {
       open: false,
@@ -4144,12 +4145,14 @@
       keys: new Set(),
       mouse: 0,
       shake: 0,
+      pointerLockedOnce: false,
       messageTimer: 0,
       player: { x: 2.4, y: 9.4, a: -0.2, hp: 100, armor: 50, credits: 800, round: 1 },
       weaponKey: 'viper',
       ammo: { viper: { mag: 12, reserve: 36 }, marshal: { mag: 5, reserve: 20 }, breach: { mag: 4, reserve: 16 } },
       lastShot: 0,
       reloadUntil: 0,
+      reloadWeapon: null,
       enemies: [],
       particles: []
     };
@@ -4168,22 +4171,49 @@
       return fpsCell(x, y) === '0';
     }
 
+    function fpsCircleWalkable(x, y, radius = fpsPlayerRadius) {
+      return fpsWalkable(x, y) &&
+        fpsWalkable(x + radius, y) &&
+        fpsWalkable(x - radius, y) &&
+        fpsWalkable(x, y + radius) &&
+        fpsWalkable(x, y - radius);
+    }
+
+    function fpsNearestWalkable(x, y) {
+      if (fpsCircleWalkable(x, y)) return { x, y };
+      for (let ring = 1; ring <= 8; ring += 1) {
+        const step = ring * 0.18;
+        for (let ix = -ring; ix <= ring; ix += 1) {
+          for (let iy = -ring; iy <= ring; iy += 1) {
+            const nx = x + ix * step;
+            const ny = y + iy * step;
+            if (fpsCircleWalkable(nx, ny)) return { x: nx, y: ny };
+          }
+        }
+      }
+      return { x: 2.4, y: 9.4 };
+    }
+
     function fpsSpawnEnemies() {
       const base = [
         { x: 13.3, y: 2.3, hp: 80, type: 'red' },
         { x: 12.2, y: 9.3, hp: 80, type: 'red' },
-        { x: 7.6, y: 5.2, hp: 95, type: 'rifle' },
+        { x: 6.4, y: 5.2, hp: 95, type: 'rifle' },
         { x: 3.2, y: 2.4, hp: 70, type: 'flank' }
       ];
-      fps.enemies = base.map((enemy, index) => ({
-        ...enemy,
-        id: index,
-        hp: enemy.hp + fps.player.round * 8,
-        max: enemy.hp + fps.player.round * 8,
-        cooldown: 500 + Math.random() * 900,
-        alert: 0,
-        alive: true
-      }));
+      fps.enemies = base.map((enemy, index) => {
+        const safe = fpsNearestWalkable(enemy.x, enemy.y);
+        return {
+          ...enemy,
+          ...safe,
+          id: index,
+          hp: enemy.hp + fps.player.round * 8,
+          max: enemy.hp + fps.player.round * 8,
+          cooldown: 500 + Math.random() * 900,
+          alert: 0,
+          alive: true
+        };
+      });
     }
 
     function fpsReset(full = true) {
@@ -4200,6 +4230,7 @@
       fps.ammo = { viper: { mag: 12, reserve: 36 }, marshal: { mag: 5, reserve: 20 }, breach: { mag: 4, reserve: 16 } };
       fps.lastShot = 0;
       fps.reloadUntil = 0;
+      fps.reloadWeapon = null;
       fps.particles = [];
       fpsSpawnEnemies();
       fpsSetLog('Breach lane hot. Clear the arena.');
@@ -4247,6 +4278,7 @@
       const dx = x2 - x1;
       const dy = y2 - y1;
       const dist = Math.hypot(dx, dy);
+      if (dist < 0.001) return true;
       for (let d = 0; d < dist; d += 0.08) {
         if (!fpsWalkable(x1 + dx / dist * d, y1 + dy / dist * d)) return false;
       }
@@ -4325,12 +4357,18 @@
       const ammo = fps.ammo[fps.weaponKey];
       if (fps.reloadUntil > performance.now() || ammo.mag === weapon.mag || ammo.reserve <= 0) return;
       fps.reloadUntil = performance.now() + weapon.reload;
+      fps.reloadWeapon = fps.weaponKey;
       fpsSetLog(`Reloading ${weapon.name}.`);
     }
 
     function fpsSwap(key) {
       const map = { '1': 'viper', '2': 'marshal', '3': 'breach' };
       if (!map[key]) return;
+      if (fps.reloadUntil > performance.now()) {
+        fps.reloadUntil = 0;
+        fps.reloadWeapon = null;
+        fpsSetLog('Reload cancelled. Weapon swapped.');
+      }
       fps.weaponKey = map[key];
       fpsSetLog(`${fpsWeapons[fps.weaponKey].name} ready.`);
       fpsUpdateHud();
@@ -4345,17 +4383,24 @@
       if (fps.keys.has('s')) { mx -= Math.cos(fps.player.a) * speed; my -= Math.sin(fps.player.a) * speed; }
       if (fps.keys.has('a')) { mx += Math.cos(fps.player.a - Math.PI / 2) * speed; my += Math.sin(fps.player.a - Math.PI / 2) * speed; }
       if (fps.keys.has('d')) { mx += Math.cos(fps.player.a + Math.PI / 2) * speed; my += Math.sin(fps.player.a + Math.PI / 2) * speed; }
-      if (fpsWalkable(fps.player.x + mx, fps.player.y)) fps.player.x += mx;
-      if (fpsWalkable(fps.player.x, fps.player.y + my)) fps.player.y += my;
+      const moveLen = Math.hypot(mx, my);
+      if (moveLen > speed && moveLen > 0) {
+        mx = mx / moveLen * speed;
+        my = my / moveLen * speed;
+      }
+      if (fpsCircleWalkable(fps.player.x + mx, fps.player.y)) fps.player.x += mx;
+      if (fpsCircleWalkable(fps.player.x, fps.player.y + my)) fps.player.y += my;
       const now = performance.now();
-      const activeWeapon = fpsWeapons[fps.weaponKey];
-      const ammo = fps.ammo[fps.weaponKey];
       if (fps.reloadUntil && fps.reloadUntil <= now) {
+        const reloadKey = fps.reloadWeapon || fps.weaponKey;
+        const activeWeapon = fpsWeapons[reloadKey];
+        const ammo = fps.ammo[reloadKey];
         const needed = activeWeapon.mag - ammo.mag;
         const moved = Math.min(needed, ammo.reserve);
         ammo.mag += moved;
         ammo.reserve -= moved;
         fps.reloadUntil = 0;
+        fps.reloadWeapon = null;
         fpsSetLog(`${activeWeapon.name} loaded.`);
       }
       fps.enemies.forEach((enemy) => {
@@ -4369,8 +4414,8 @@
           const step = dt * (enemy.type === 'flank' ? 1.1 : 0.75);
           const nx = enemy.x + dx / dist * step;
           const ny = enemy.y + dy / dist * step;
-          if (fpsWalkable(nx, enemy.y)) enemy.x = nx;
-          if (fpsWalkable(enemy.x, ny)) enemy.y = ny;
+          if (dist > 0.001 && fpsCircleWalkable(nx, enemy.y, 0.16)) enemy.x = nx;
+          if (dist > 0.001 && fpsCircleWalkable(enemy.x, ny, 0.16)) enemy.y = ny;
         }
         enemy.cooldown -= dt * 1000 * (enemy.alert + 0.2);
         if (visible && dist < 8.5 && enemy.cooldown <= 0) {
@@ -4497,6 +4542,9 @@
     function fpsCloseWindow() {
       fps.open = false;
       fps.active = false;
+      fps.keys.clear();
+      fps.reloadUntil = 0;
+      fps.reloadWeapon = null;
       fpsWindow.classList.remove('is-open');
       fpsWindow.setAttribute('aria-hidden', 'true');
       document.body.classList.remove('is-profile-open');
@@ -4505,7 +4553,9 @@
     }
 
     function fpsDeployGame() {
+      if (fps.player.hp <= 0 || fps.enemies.every((enemy) => !enemy.alive)) fpsReset(false);
       fps.active = true;
+      fps.pointerLockedOnce = false;
       fpsMenu.classList.add('is-hidden');
       fpsCanvas.requestPointerLock?.();
       fpsSetLog('Contact front. Clear the western lane.');
@@ -4519,6 +4569,18 @@
       else fpsShoot();
     });
     window.addEventListener('resize', fpsResize, { passive: true });
+    document.addEventListener('pointerlockchange', () => {
+      if (!fps.open) return;
+      const locked = document.pointerLockElement === fpsCanvas;
+      if (locked) fps.pointerLockedOnce = true;
+      if (!locked && fps.pointerLockedOnce && fps.active) {
+        fps.active = false;
+        fps.pointerLockedOnce = false;
+        fps.keys.clear();
+        fpsMenu.classList.remove('is-hidden');
+        fpsSetLog('Training paused. Click Enter Arena to resume.');
+      }
+    });
     window.addEventListener('mousemove', (event) => {
       if (document.pointerLockElement === fpsCanvas) fps.player.a += event.movementX * 0.0022;
     });
@@ -4537,6 +4599,24 @@
     window.addEventListener('keyup', (event) => {
       fps.keys.delete(event.key.toLowerCase());
     });
+    window.__fpsDebug = {
+      snapshot: () => ({
+        open: fps.open,
+        active: fps.active,
+        player: { ...fps.player },
+        weaponKey: fps.weaponKey,
+        reloadUntil: fps.reloadUntil,
+        reloadWeapon: fps.reloadWeapon,
+        ammo: JSON.parse(JSON.stringify(fps.ammo)),
+        enemies: fps.enemies.map((enemy) => ({ ...enemy, walkable: fpsCircleWalkable(enemy.x, enemy.y, 0.16) })),
+        menuHidden: fpsMenu.classList.contains('is-hidden'),
+        log: fpsHud.log.textContent
+      }),
+      functions: {
+        walkable: (x, y) => fpsCircleWalkable(x, y),
+        lineClear: (x1, y1, x2, y2) => fpsLineClear(x1, y1, x2, y2)
+      }
+    };
 
     /* === PLAYABLE DUEL GAME === */
     const duelCanvas = document.getElementById('duelCanvas');
