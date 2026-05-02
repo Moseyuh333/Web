@@ -169,6 +169,7 @@ try {
     journeyMotion: getComputedStyle(document.documentElement).getPropertyValue('--journey-progress').trim() !== '',
     cinematicUi: !!document.querySelector('.cinematic-loader') && !!document.querySelector('.scroll-rail') && !!document.querySelector('.scene-flash'),
     duelGame: !!document.querySelector('#duelCanvas') && !!document.querySelector('#duelStart') && document.querySelectorAll('.weapon-btn').length === 3,
+    fpsGame: !!document.querySelector('#fpsWindow') && !!document.querySelector('#fpsCanvas') && !!document.querySelector('#fpsLaunch'),
     viewTransitionRef: document.documentElement.innerHTML.includes('startViewTransition'),
     operators: document.querySelectorAll('[data-profile-id]').length,
     overflow: document.body.scrollWidth > window.innerWidth + 2,
@@ -183,18 +184,24 @@ try {
 
   await evaluate(client, `document.querySelector('#duel')?.scrollIntoView();`);
   await delay(400);
-  await evaluate(client, `document.querySelector('[data-weapon="rifle"]').click();`);
-  await evaluate(client, `document.querySelector('#duelStart').click();`);
-  await delay(3200);
-  await evaluate(client, `document.querySelector('#duelCanvas').click();`);
+  await evaluate(client, `document.querySelector('#fpsLaunch').click();`);
+  await delay(300);
+  await evaluate(client, `document.querySelector('#fpsDeploy').click();`);
+  await client.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'w', code: 'KeyW', windowsVirtualKeyCode: 87 });
+  await delay(250);
+  await client.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'w', code: 'KeyW', windowsVirtualKeyCode: 87 });
+  await evaluate(client, `document.querySelector('#fpsCanvas').click();`);
   await delay(500);
   const duelInteraction = await evaluate(client, `(() => {
-    const readout = document.querySelector('#duelReadout')?.textContent || '';
-    const player = document.querySelector('#playerHpText')?.textContent || '';
-    return document.querySelector('[data-weapon="rifle"]').classList.contains('is-active') &&
-      /ROUNDS|SHELLS|HP/.test(player) &&
-      readout.length > 8;
+    const win = document.querySelector('#fpsWindow');
+    const ammo = document.querySelector('#fpsAmmo')?.textContent || '';
+    const log = document.querySelector('#fpsLog')?.textContent || '';
+    return win.classList.contains('is-open') &&
+      document.querySelector('#fpsMenu').classList.contains('is-hidden') &&
+      /\\d+ \\/ \\d+/.test(ammo) &&
+      log.length > 8;
   })()`);
+  await evaluate(client, `document.querySelector('#fpsClose').click();`);
 
   await evaluate(client, `document.querySelector('#soundStart').click();`);
   await delay(300);
@@ -240,6 +247,7 @@ try {
     base.journeyMotion,
     base.cinematicUi,
     base.duelGame,
+    base.fpsGame,
     duelInteraction,
     base.viewTransitionRef,
     base.operators === 7,

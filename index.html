@@ -1633,6 +1633,325 @@
       overflow: hidden;
     }
 
+    .duel-stage--legacy {
+      display: none;
+    }
+
+    .fps-launch-panel {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 28px;
+      align-items: end;
+      min-height: 460px;
+      padding: clamp(22px, 4vw, 44px);
+      border: 1px solid rgba(201, 147, 42, 0.34);
+      background:
+        linear-gradient(90deg, rgba(10, 8, 5, 0.62), rgba(10, 8, 5, 0.12)),
+        url("assets/duel-arena.png") center / cover;
+      box-shadow: 0 34px 110px rgba(0, 0, 0, 0.5), inset 0 0 90px rgba(0, 0, 0, 0.44);
+      overflow: hidden;
+    }
+
+    .fps-launch-panel::before,
+    .fps-launch-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .fps-launch-panel::before {
+      background:
+        radial-gradient(circle at 72% 36%, rgba(201, 147, 42, 0.26), transparent 20rem),
+        linear-gradient(90deg, rgba(10, 8, 5, 0.88), rgba(10, 8, 5, 0.12) 62%, rgba(10, 8, 5, 0.5));
+    }
+
+    .fps-launch-panel::after {
+      background:
+        linear-gradient(rgba(245, 240, 232, 0.045) 1px, transparent 1px),
+        radial-gradient(ellipse at center, transparent 46%, rgba(0, 0, 0, 0.52));
+      background-size: 100% 4px, auto;
+    }
+
+    .fps-launch-copy,
+    .fps-launch-actions {
+      position: relative;
+      z-index: 1;
+    }
+
+    .fps-launch-copy h3 {
+      max-width: 720px;
+      margin: 0 0 18px;
+      color: var(--color-gold);
+      font-family: var(--font-serif);
+      font-size: clamp(3rem, 8vw, 7rem);
+      line-height: 0.78;
+    }
+
+    .fps-launch-copy p {
+      max-width: 620px;
+      margin: 0;
+      color: rgba(245, 240, 232, 0.76);
+      line-height: 1.8;
+    }
+
+    .fps-specs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 22px;
+    }
+
+    .fps-specs span {
+      padding: 7px 9px;
+      color: rgba(245, 240, 232, 0.78);
+      border: 1px solid rgba(201, 147, 42, 0.28);
+      background: rgba(10, 8, 5, 0.52);
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .fps-launch-actions {
+      display: grid;
+      gap: 12px;
+      justify-items: end;
+      min-width: min(260px, 100%);
+    }
+
+    .fps-primary {
+      width: 100%;
+      min-height: 58px;
+      padding: 15px 18px;
+      color: var(--color-void);
+      border: 1px solid rgba(245, 240, 232, 0.24);
+      background: linear-gradient(135deg, var(--color-gold), #f0c76c);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      box-shadow: 0 20px 52px rgba(201, 147, 42, 0.28);
+    }
+
+    .fps-primary:hover {
+      transform: translateY(-3px);
+    }
+
+    .fps-note {
+      color: rgba(245, 240, 232, 0.58);
+      font-size: 0.62rem;
+      line-height: 1.6;
+      text-align: right;
+      text-transform: uppercase;
+    }
+
+    .fps-window {
+      position: fixed;
+      inset: 0;
+      z-index: 220;
+      display: grid;
+      place-items: stretch;
+      background: #050403;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: scale(1.02);
+      transition: opacity 360ms var(--ease-out), visibility 360ms var(--ease-out), transform 520ms var(--ease-out);
+    }
+
+    .fps-window.is-open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: scale(1);
+    }
+
+    .fps-window::before,
+    .fps-window::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .fps-window::before {
+      background:
+        linear-gradient(rgba(245, 240, 232, 0.05) 1px, transparent 1px),
+        radial-gradient(ellipse at center, transparent 45%, rgba(0, 0, 0, 0.55));
+      background-size: 100% 4px, auto;
+      mix-blend-mode: soft-light;
+    }
+
+    .fps-window::after {
+      background: radial-gradient(circle at 50% 50%, transparent 48%, rgba(0, 0, 0, 0.48));
+    }
+
+    #fpsCanvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background: #070504;
+    }
+
+    .fps-hud {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      padding: clamp(14px, 2vw, 26px);
+      pointer-events: none;
+    }
+
+    .fps-topbar,
+    .fps-bottombar {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .fps-chip {
+      min-width: 132px;
+      padding: 10px 12px;
+      color: rgba(245, 240, 232, 0.86);
+      border: 1px solid rgba(201, 147, 42, 0.25);
+      background: rgba(10, 8, 5, 0.56);
+      font-size: 0.64rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      backdrop-filter: blur(10px);
+    }
+
+    .fps-chip strong {
+      display: block;
+      margin-top: 6px;
+      color: var(--color-gold);
+      font-family: var(--font-serif);
+      font-size: 1.8rem;
+      line-height: 0.9;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    .fps-crosshair {
+      align-self: center;
+      justify-self: center;
+      width: 28px;
+      height: 28px;
+      border: 1px solid rgba(201, 147, 42, 0.72);
+      border-radius: 50%;
+      box-shadow: 0 0 18px rgba(201, 147, 42, 0.28);
+    }
+
+    .fps-crosshair::before,
+    .fps-crosshair::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 54px;
+      height: 1px;
+      background: rgba(201, 147, 42, 0.72);
+      transform: translate(-50%, -50%);
+    }
+
+    .fps-crosshair::after {
+      width: 1px;
+      height: 54px;
+    }
+
+    .fps-bottombar {
+      align-items: end;
+    }
+
+    .fps-log {
+      max-width: 520px;
+      color: rgba(245, 240, 232, 0.82);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      line-height: 1.7;
+      text-transform: uppercase;
+    }
+
+    .fps-close {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      z-index: 6;
+      padding: 11px 13px;
+      color: rgba(245, 240, 232, 0.86);
+      border: 1px solid rgba(201, 147, 42, 0.34);
+      background: rgba(10, 8, 5, 0.58);
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      backdrop-filter: blur(12px);
+    }
+
+    .fps-menu {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: radial-gradient(circle at 50% 46%, rgba(201, 147, 42, 0.12), rgba(5, 4, 3, 0.72) 44%, rgba(5, 4, 3, 0.92));
+      transition: opacity 260ms ease, visibility 260ms ease;
+    }
+
+    .fps-menu.is-hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .fps-menu-card {
+      max-width: 620px;
+      padding: clamp(22px, 4vw, 38px);
+      border: 1px solid rgba(201, 147, 42, 0.34);
+      background: rgba(10, 8, 5, 0.66);
+      text-align: center;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 30px 100px rgba(0, 0, 0, 0.46);
+    }
+
+    .fps-menu-card h3 {
+      margin: 0 0 16px;
+      color: var(--color-gold);
+      font-family: var(--font-serif);
+      font-size: clamp(3rem, 8vw, 6.4rem);
+      line-height: 0.78;
+    }
+
+    .fps-menu-card p {
+      margin: 0 auto 22px;
+      max-width: 480px;
+      color: rgba(245, 240, 232, 0.74);
+      line-height: 1.7;
+    }
+
+    .fps-menu-card button {
+      padding: 14px 18px;
+      color: var(--color-void);
+      border: 0;
+      background: var(--color-gold);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
     .duel-stage::before,
     .duel-stage::after {
       content: "";
@@ -2371,6 +2690,27 @@
       .duel-header {
         grid-template-columns: 1fr;
       }
+      .fps-launch-panel {
+        grid-template-columns: 1fr;
+        min-height: 560px;
+      }
+      .fps-launch-actions {
+        justify-items: stretch;
+      }
+      .fps-note {
+        text-align: left;
+      }
+      .fps-topbar,
+      .fps-bottombar {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .fps-chip {
+        min-width: 0;
+      }
+      .fps-chip strong {
+        font-size: 1.35rem;
+      }
       .duel-bars {
         grid-template-columns: 1fr;
       }
@@ -2727,12 +3067,31 @@
       <div class="duel-header reveal">
         <div>
           <p class="section-kicker">Playable Dossier / Web Duel</p>
-          <h2 class="section-title">High Noon Breach Protocol</h2>
+          <h2 class="section-title">Counter-Frontier 3D</h2>
         </div>
-        <p class="section-copy">A cinematic browser duel built into the portfolio: manage health, stamina, ammo, reload timing, weapon choice, aim discipline, and the enemy operator's aggression.</p>
+        <p class="section-copy">A separate browser game window inspired by tactical FPS flow: pointer-lock aiming, WASD movement, weapon economy, reload discipline, HP/armor, enemy AI, and a dusty western kill house.</p>
       </div>
 
-      <div class="duel-stage reveal" id="duelStage">
+      <div class="fps-launch-panel reveal">
+        <div class="fps-launch-copy">
+          <h3>Launch 3D Duel</h3>
+          <p>Enter a dedicated first-person training arena. Clear hostile operators, manage ammo, swap weapons, and survive the high-noon breach protocol without leaving the portfolio.</p>
+          <div class="fps-specs">
+            <span>WASD Movement</span>
+            <span>Mouse Aim</span>
+            <span>HP / Armor</span>
+            <span>Ammo / Reload</span>
+            <span>Enemy AI</span>
+            <span>Radar</span>
+          </div>
+        </div>
+        <div class="fps-launch-actions">
+          <button class="fps-primary" type="button" id="fpsLaunch">Open Duel Window</button>
+          <div class="fps-note">Desktop recommended. Click once inside the game to lock pointer. ESC releases mouse / closes pause.</div>
+        </div>
+      </div>
+
+      <div class="duel-stage duel-stage--legacy reveal" id="duelStage" aria-hidden="true">
         <canvas id="duelCanvas" width="1600" height="900" aria-label="Playable cowboy duel game"></canvas>
         <div class="duel-hud" aria-live="polite">
           <div class="duel-bars">
@@ -2790,6 +3149,34 @@
       </div>
     </div>
   </section>
+
+  <!-- === FULL-SCREEN FPS DUEL WINDOW === -->
+  <div class="fps-window" id="fpsWindow" aria-hidden="true">
+    <canvas id="fpsCanvas" aria-label="3D tactical cowboy duel game"></canvas>
+    <button class="fps-close" type="button" id="fpsClose">Exit Training</button>
+    <div class="fps-hud" aria-live="polite">
+      <div class="fps-topbar">
+        <div class="fps-chip">Health<strong id="fpsHealth">100</strong></div>
+        <div class="fps-chip">Armor<strong id="fpsArmor">50</strong></div>
+        <div class="fps-chip">Enemies<strong id="fpsEnemies">4</strong></div>
+        <div class="fps-chip">Round<strong id="fpsRound">01</strong></div>
+      </div>
+      <div class="fps-crosshair" aria-hidden="true"></div>
+      <div class="fps-bottombar">
+        <div class="fps-log" id="fpsLog">Loadout ready. Click deploy to enter pointer lock.</div>
+        <div class="fps-chip">Weapon<strong id="fpsWeapon">Viper-6</strong></div>
+        <div class="fps-chip">Ammo<strong id="fpsAmmo">12 / 36</strong></div>
+        <div class="fps-chip">Credits<strong id="fpsCredits">$800</strong></div>
+      </div>
+    </div>
+    <div class="fps-menu" id="fpsMenu">
+      <div class="fps-menu-card">
+        <h3>3D Duel</h3>
+        <p>WASD to move. Mouse to aim. Click to fire. R reloads. 1/2/3 swaps weapons. Shift walks faster. Clear the arena before the hostile operators burn through your armor.</p>
+        <button type="button" id="fpsDeploy">Enter Arena</button>
+      </div>
+    </div>
+  </div>
 
   <div class="toast" id="toast">Email copied to clipboard</div>
 
@@ -3705,6 +4092,450 @@
 
     soundStart?.addEventListener('click', async () => {
       await setSoundState(!isSoundOn);
+    });
+
+    /* === FULLSCREEN FPS DUEL: RAYCAST 3D ENGINE === */
+    const fpsWindow = document.getElementById('fpsWindow');
+    const fpsLaunch = document.getElementById('fpsLaunch');
+    const fpsClose = document.getElementById('fpsClose');
+    const fpsCanvas = document.getElementById('fpsCanvas');
+    const fpsMenu = document.getElementById('fpsMenu');
+    const fpsDeploy = document.getElementById('fpsDeploy');
+    const fpsCtx = fpsCanvas?.getContext('2d', { alpha: false });
+    const fpsHud = {
+      health: document.getElementById('fpsHealth'),
+      armor: document.getElementById('fpsArmor'),
+      enemies: document.getElementById('fpsEnemies'),
+      round: document.getElementById('fpsRound'),
+      weapon: document.getElementById('fpsWeapon'),
+      ammo: document.getElementById('fpsAmmo'),
+      credits: document.getElementById('fpsCredits'),
+      log: document.getElementById('fpsLog')
+    };
+
+    const fpsMap = [
+      "1111111111111111",
+      "1000000000000001",
+      "1020002000200001",
+      "1000110000110001",
+      "1000000000000001",
+      "1000200110002001",
+      "1000000110000001",
+      "1000000000000001",
+      "1000110000110001",
+      "1000002000000001",
+      "1000000000000001",
+      "1111111111111111"
+    ];
+
+    const fpsWeapons = {
+      viper: { name: 'Viper-6', damage: 24, mag: 12, reserve: 36, fireRate: 165, reload: 1150, spread: 0.02, range: 9 },
+      marshal: { name: 'Marshal Rifle', damage: 48, mag: 5, reserve: 20, fireRate: 540, reload: 1550, spread: 0.006, range: 13 },
+      breach: { name: 'Breach-12', damage: 18, pellets: 6, mag: 4, reserve: 16, fireRate: 780, reload: 1750, spread: 0.085, range: 5.8 }
+    };
+
+    const fps = {
+      open: false,
+      active: false,
+      last: performance.now(),
+      width: 1280,
+      height: 720,
+      fov: Math.PI / 3,
+      keys: new Set(),
+      mouse: 0,
+      shake: 0,
+      messageTimer: 0,
+      player: { x: 2.4, y: 9.4, a: -0.2, hp: 100, armor: 50, credits: 800, round: 1 },
+      weaponKey: 'viper',
+      ammo: { viper: { mag: 12, reserve: 36 }, marshal: { mag: 5, reserve: 20 }, breach: { mag: 4, reserve: 16 } },
+      lastShot: 0,
+      reloadUntil: 0,
+      enemies: [],
+      particles: []
+    };
+
+    function fpsSetLog(message, duration = 1800) {
+      fpsHud.log.textContent = message;
+      fps.messageTimer = duration;
+    }
+
+    function fpsCell(x, y) {
+      const row = fpsMap[Math.floor(y)];
+      return row ? row[Math.floor(x)] || '1' : '1';
+    }
+
+    function fpsWalkable(x, y) {
+      return fpsCell(x, y) === '0';
+    }
+
+    function fpsSpawnEnemies() {
+      const base = [
+        { x: 13.3, y: 2.3, hp: 80, type: 'red' },
+        { x: 12.2, y: 9.3, hp: 80, type: 'red' },
+        { x: 7.6, y: 5.2, hp: 95, type: 'rifle' },
+        { x: 3.2, y: 2.4, hp: 70, type: 'flank' }
+      ];
+      fps.enemies = base.map((enemy, index) => ({
+        ...enemy,
+        id: index,
+        hp: enemy.hp + fps.player.round * 8,
+        max: enemy.hp + fps.player.round * 8,
+        cooldown: 500 + Math.random() * 900,
+        alert: 0,
+        alive: true
+      }));
+    }
+
+    function fpsReset(full = true) {
+      fps.player.x = 2.4;
+      fps.player.y = 9.4;
+      fps.player.a = -0.2;
+      fps.player.hp = 100;
+      fps.player.armor = 50;
+      if (full) {
+        fps.player.round = 1;
+        fps.player.credits = 800;
+      }
+      fps.weaponKey = 'viper';
+      fps.ammo = { viper: { mag: 12, reserve: 36 }, marshal: { mag: 5, reserve: 20 }, breach: { mag: 4, reserve: 16 } };
+      fps.lastShot = 0;
+      fps.reloadUntil = 0;
+      fps.particles = [];
+      fpsSpawnEnemies();
+      fpsSetLog('Breach lane hot. Clear the arena.');
+      fpsUpdateHud();
+    }
+
+    function fpsUpdateHud() {
+      const weapon = fpsWeapons[fps.weaponKey];
+      const ammo = fps.ammo[fps.weaponKey];
+      fpsHud.health.textContent = Math.max(0, Math.round(fps.player.hp));
+      fpsHud.armor.textContent = Math.max(0, Math.round(fps.player.armor));
+      fpsHud.enemies.textContent = fps.enemies.filter((enemy) => enemy.alive).length;
+      fpsHud.round.textContent = String(fps.player.round).padStart(2, '0');
+      fpsHud.weapon.textContent = weapon.name;
+      fpsHud.ammo.textContent = `${ammo.mag} / ${ammo.reserve}`;
+      fpsHud.credits.textContent = `$${fps.player.credits}`;
+    }
+
+    function fpsResize() {
+      if (!fpsCanvas || !fpsCtx) return;
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      fps.width = Math.floor(window.innerWidth * ratio);
+      fps.height = Math.floor(window.innerHeight * ratio);
+      fpsCanvas.width = fps.width;
+      fpsCanvas.height = fps.height;
+    }
+
+    function fpsCast(angle) {
+      let distance = 0;
+      const step = 0.025;
+      const sin = Math.sin(angle);
+      const cos = Math.cos(angle);
+      let hit = '0';
+      while (distance < 18) {
+        distance += step;
+        const x = fps.player.x + cos * distance;
+        const y = fps.player.y + sin * distance;
+        hit = fpsCell(x, y);
+        if (hit !== '0') break;
+      }
+      return { distance, hit };
+    }
+
+    function fpsLineClear(x1, y1, x2, y2) {
+      const dx = x2 - x1;
+      const dy = y2 - y1;
+      const dist = Math.hypot(dx, dy);
+      for (let d = 0; d < dist; d += 0.08) {
+        if (!fpsWalkable(x1 + dx / dist * d, y1 + dy / dist * d)) return false;
+      }
+      return true;
+    }
+
+    function fpsDamagePlayer(amount) {
+      const armorHit = Math.min(fps.player.armor, amount * 0.55);
+      fps.player.armor -= armorHit;
+      fps.player.hp -= amount - armorHit;
+      fps.shake = Math.max(fps.shake, 10);
+      fpsSetLog('Impact. Armor integrity dropping.');
+      if (fps.player.hp <= 0) {
+        fps.active = false;
+        fpsMenu.classList.remove('is-hidden');
+        fpsSetLog('Training failed. Redeploy when ready.');
+      }
+    }
+
+    function fpsShoot() {
+      if (!fps.active) return;
+      const now = performance.now();
+      const weapon = fpsWeapons[fps.weaponKey];
+      const ammo = fps.ammo[fps.weaponKey];
+      if (fps.reloadUntil > now) return;
+      if (now - fps.lastShot < weapon.fireRate) return;
+      if (ammo.mag <= 0) {
+        fpsSetLog('Magazine empty. Press R.');
+        return;
+      }
+      ammo.mag -= 1;
+      fps.lastShot = now;
+      fps.shake = Math.max(fps.shake, fps.weaponKey === 'breach' ? 16 : 8);
+      const pellets = weapon.pellets || 1;
+      let hit = false;
+      for (let p = 0; p < pellets; p += 1) {
+        const shotAngle = fps.player.a + (Math.random() - 0.5) * weapon.spread;
+        let best = null;
+        fps.enemies.forEach((enemy) => {
+          if (!enemy.alive) return;
+          const dx = enemy.x - fps.player.x;
+          const dy = enemy.y - fps.player.y;
+          const dist = Math.hypot(dx, dy);
+          if (dist > weapon.range) return;
+          let diff = Math.atan2(dy, dx) - shotAngle;
+          diff = Math.atan2(Math.sin(diff), Math.cos(diff));
+          if (Math.abs(diff) < 0.055 + weapon.spread && fpsLineClear(fps.player.x, fps.player.y, enemy.x, enemy.y)) {
+            if (!best || dist < best.dist) best = { enemy, dist };
+          }
+        });
+        if (best) {
+          best.enemy.hp -= weapon.damage;
+          best.enemy.alert = 1;
+          hit = true;
+          fps.particles.push({ x: best.enemy.x, y: best.enemy.y, life: 360, color: '#8B3A2A' });
+          if (best.enemy.hp <= 0) {
+            best.enemy.alive = false;
+            fps.player.credits += 300;
+            fpsSetLog('Hostile dropped. Check corners.');
+          }
+        }
+      }
+      if (!hit) fpsSetLog('Shot missed. Correct sightline.');
+      if (isSoundOn) playMetalHit(0);
+      fpsUpdateHud();
+      if (fps.enemies.every((enemy) => !enemy.alive)) {
+        fps.active = false;
+        fps.player.round += 1;
+        fpsMenu.classList.remove('is-hidden');
+        fpsSetLog('Arena clear. Next round armed.');
+      }
+    }
+
+    function fpsReload() {
+      const weapon = fpsWeapons[fps.weaponKey];
+      const ammo = fps.ammo[fps.weaponKey];
+      if (fps.reloadUntil > performance.now() || ammo.mag === weapon.mag || ammo.reserve <= 0) return;
+      fps.reloadUntil = performance.now() + weapon.reload;
+      fpsSetLog(`Reloading ${weapon.name}.`);
+    }
+
+    function fpsSwap(key) {
+      const map = { '1': 'viper', '2': 'marshal', '3': 'breach' };
+      if (!map[key]) return;
+      fps.weaponKey = map[key];
+      fpsSetLog(`${fpsWeapons[fps.weaponKey].name} ready.`);
+      fpsUpdateHud();
+    }
+
+    function fpsUpdate(dt) {
+      if (!fps.active) return;
+      const speed = (fps.keys.has('shift') ? 4.2 : 2.6) * dt;
+      let mx = 0;
+      let my = 0;
+      if (fps.keys.has('w')) { mx += Math.cos(fps.player.a) * speed; my += Math.sin(fps.player.a) * speed; }
+      if (fps.keys.has('s')) { mx -= Math.cos(fps.player.a) * speed; my -= Math.sin(fps.player.a) * speed; }
+      if (fps.keys.has('a')) { mx += Math.cos(fps.player.a - Math.PI / 2) * speed; my += Math.sin(fps.player.a - Math.PI / 2) * speed; }
+      if (fps.keys.has('d')) { mx += Math.cos(fps.player.a + Math.PI / 2) * speed; my += Math.sin(fps.player.a + Math.PI / 2) * speed; }
+      if (fpsWalkable(fps.player.x + mx, fps.player.y)) fps.player.x += mx;
+      if (fpsWalkable(fps.player.x, fps.player.y + my)) fps.player.y += my;
+      const now = performance.now();
+      const activeWeapon = fpsWeapons[fps.weaponKey];
+      const ammo = fps.ammo[fps.weaponKey];
+      if (fps.reloadUntil && fps.reloadUntil <= now) {
+        const needed = activeWeapon.mag - ammo.mag;
+        const moved = Math.min(needed, ammo.reserve);
+        ammo.mag += moved;
+        ammo.reserve -= moved;
+        fps.reloadUntil = 0;
+        fpsSetLog(`${activeWeapon.name} loaded.`);
+      }
+      fps.enemies.forEach((enemy) => {
+        if (!enemy.alive) return;
+        const dx = fps.player.x - enemy.x;
+        const dy = fps.player.y - enemy.y;
+        const dist = Math.hypot(dx, dy);
+        const visible = fpsLineClear(enemy.x, enemy.y, fps.player.x, fps.player.y);
+        if (visible && dist < 9) enemy.alert = Math.min(1, enemy.alert + dt * 1.4);
+        if (enemy.alert > 0.2 && dist > 2.2) {
+          const step = dt * (enemy.type === 'flank' ? 1.1 : 0.75);
+          const nx = enemy.x + dx / dist * step;
+          const ny = enemy.y + dy / dist * step;
+          if (fpsWalkable(nx, enemy.y)) enemy.x = nx;
+          if (fpsWalkable(enemy.x, ny)) enemy.y = ny;
+        }
+        enemy.cooldown -= dt * 1000 * (enemy.alert + 0.2);
+        if (visible && dist < 8.5 && enemy.cooldown <= 0) {
+          enemy.cooldown = 900 + Math.random() * 850;
+          if (Math.random() < 0.72 - dist * 0.035) fpsDamagePlayer(enemy.type === 'rifle' ? 18 : 12);
+          else fpsSetLog('Incoming fire missed.');
+        }
+      });
+      fps.particles = fps.particles.filter((particle) => (particle.life -= dt * 1000) > 0);
+      fps.shake *= 0.88;
+      fpsUpdateHud();
+    }
+
+    function fpsRender() {
+      if (!fpsCtx) return;
+      const ctx = fpsCtx;
+      const w = fps.width;
+      const h = fps.height;
+      const shakeX = (Math.random() - 0.5) * fps.shake;
+      const shakeY = (Math.random() - 0.5) * fps.shake;
+      ctx.save();
+      ctx.translate(shakeX, shakeY);
+      const sky = ctx.createLinearGradient(0, 0, 0, h * 0.56);
+      sky.addColorStop(0, '#0A0805');
+      sky.addColorStop(0.56, '#5A2410');
+      sky.addColorStop(1, '#C9932A');
+      ctx.fillStyle = sky;
+      ctx.fillRect(-20, -20, w + 40, h * 0.56);
+      const floor = ctx.createLinearGradient(0, h * 0.46, 0, h);
+      floor.addColorStop(0, '#3D1F0A');
+      floor.addColorStop(1, '#080503');
+      ctx.fillStyle = floor;
+      ctx.fillRect(-20, h * 0.46, w + 40, h);
+      const columns = Math.floor(w / 3);
+      for (let i = 0; i < columns; i += 1) {
+        const angle = fps.player.a - fps.fov / 2 + (i / columns) * fps.fov;
+        const ray = fpsCast(angle);
+        const corrected = ray.distance * Math.cos(angle - fps.player.a);
+        const wallH = Math.min(h, h / Math.max(0.08, corrected));
+        const shade = clamp(1 - corrected / 13, 0.15, 1);
+        const wallColor = ray.hit === '2' ? [201, 147, 42] : [70, 35, 16];
+        ctx.fillStyle = `rgb(${wallColor.map((v) => Math.round(v * shade)).join(',')})`;
+        ctx.fillRect(i * 3, h / 2 - wallH / 2, 4, wallH);
+      }
+      const visibleEnemies = fps.enemies
+        .filter((enemy) => enemy.alive)
+        .map((enemy) => {
+          const dx = enemy.x - fps.player.x;
+          const dy = enemy.y - fps.player.y;
+          const dist = Math.hypot(dx, dy);
+          let angle = Math.atan2(dy, dx) - fps.player.a;
+          angle = Math.atan2(Math.sin(angle), Math.cos(angle));
+          return { enemy, dist, angle };
+        })
+        .filter((item) => Math.abs(item.angle) < fps.fov * 0.62 && fpsLineClear(fps.player.x, fps.player.y, item.enemy.x, item.enemy.y))
+        .sort((a, b) => b.dist - a.dist);
+      visibleEnemies.forEach(({ enemy, dist, angle }) => {
+        const size = h / dist * 0.72;
+        const sx = w / 2 + (angle / (fps.fov / 2)) * (w / 2) - size / 2;
+        const sy = h / 2 - size * 0.45;
+        ctx.fillStyle = 'rgba(0,0,0,0.45)';
+        ctx.beginPath();
+        ctx.ellipse(sx + size / 2, sy + size * 1.18, size * 0.42, size * 0.08, 0, 0, Math.PI * 2);
+        ctx.fill();
+        const body = ctx.createLinearGradient(sx, sy, sx + size, sy + size);
+        body.addColorStop(0, enemy.type === 'rifle' ? '#2E1510' : '#130907');
+        body.addColorStop(1, enemy.type === 'flank' ? '#6D291F' : '#050403');
+        ctx.fillStyle = body;
+        ctx.fillRect(sx + size * 0.3, sy + size * 0.28, size * 0.4, size * 0.74);
+        ctx.fillStyle = '#050403';
+        ctx.fillRect(sx + size * 0.14, sy + size * 0.22, size * 0.72, size * 0.06);
+        ctx.fillRect(sx + size * 0.34, sy + size * 0.04, size * 0.32, size * 0.2);
+        ctx.fillRect(sx + size * 0.66, sy + size * 0.52, size * 0.52, size * 0.05);
+        ctx.fillStyle = '#C9932A';
+        ctx.fillRect(sx + size * 0.29, sy - 10, size * 0.42 * (enemy.hp / enemy.max), 4);
+      });
+      fps.particles.forEach((particle) => {
+        const dx = particle.x - fps.player.x;
+        const dy = particle.y - fps.player.y;
+        const dist = Math.hypot(dx, dy);
+        let angle = Math.atan2(dy, dx) - fps.player.a;
+        angle = Math.atan2(Math.sin(angle), Math.cos(angle));
+        if (Math.abs(angle) > fps.fov / 2) return;
+        const size = h / dist * 0.08;
+        ctx.globalAlpha = clamp(particle.life / 360, 0, 1);
+        ctx.fillStyle = particle.color;
+        ctx.beginPath();
+        ctx.arc(w / 2 + (angle / (fps.fov / 2)) * (w / 2), h / 2, size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      });
+      const bob = Math.sin(performance.now() * 0.008) * 5;
+      ctx.fillStyle = '#090604';
+      ctx.fillRect(w * 0.56, h * 0.72 + bob, w * 0.28, h * 0.1);
+      ctx.fillStyle = '#1C0F05';
+      ctx.fillRect(w * 0.64, h * 0.68 + bob, w * 0.24, h * 0.05);
+      ctx.fillStyle = '#C9932A';
+      ctx.fillRect(w * 0.62, h * 0.69 + bob, w * 0.06, h * 0.02);
+      ctx.restore();
+    }
+
+    function fpsLoop(now) {
+      if (!fps.open) return;
+      const dt = Math.min(0.045, (now - fps.last) / 1000);
+      fps.last = now;
+      fpsUpdate(dt);
+      fpsRender();
+      requestAnimationFrame(fpsLoop);
+    }
+
+    function fpsOpen() {
+      fps.open = true;
+      fpsWindow.classList.add('is-open');
+      fpsWindow.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('is-profile-open');
+      fpsResize();
+      fpsReset(true);
+      fpsMenu.classList.remove('is-hidden');
+      fps.last = performance.now();
+      requestAnimationFrame(fpsLoop);
+      fpsDeploy.focus();
+    }
+
+    function fpsCloseWindow() {
+      fps.open = false;
+      fps.active = false;
+      fpsWindow.classList.remove('is-open');
+      fpsWindow.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('is-profile-open');
+      if (document.pointerLockElement === fpsCanvas) document.exitPointerLock();
+      fpsLaunch.focus();
+    }
+
+    function fpsDeployGame() {
+      fps.active = true;
+      fpsMenu.classList.add('is-hidden');
+      fpsCanvas.requestPointerLock?.();
+      fpsSetLog('Contact front. Clear the western lane.');
+    }
+
+    fpsLaunch?.addEventListener('click', fpsOpen);
+    fpsClose?.addEventListener('click', fpsCloseWindow);
+    fpsDeploy?.addEventListener('click', fpsDeployGame);
+    fpsCanvas?.addEventListener('click', () => {
+      if (!fps.active) fpsDeployGame();
+      else fpsShoot();
+    });
+    window.addEventListener('resize', fpsResize, { passive: true });
+    window.addEventListener('mousemove', (event) => {
+      if (document.pointerLockElement === fpsCanvas) fps.player.a += event.movementX * 0.0022;
+    });
+    window.addEventListener('keydown', (event) => {
+      if (!fps.open) return;
+      const key = event.key.toLowerCase();
+      if (['w', 'a', 's', 'd', 'shift'].includes(key)) fps.keys.add(key);
+      if (key === 'r') fpsReload();
+      if (['1', '2', '3'].includes(key)) fpsSwap(key);
+      if (event.code === 'Space') {
+        event.preventDefault();
+        fpsShoot();
+      }
+      if (event.key === 'Escape' && document.pointerLockElement !== fpsCanvas) fpsCloseWindow();
+    });
+    window.addEventListener('keyup', (event) => {
+      fps.keys.delete(event.key.toLowerCase());
     });
 
     /* === PLAYABLE DUEL GAME === */
